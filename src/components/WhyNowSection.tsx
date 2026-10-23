@@ -70,19 +70,19 @@ export function WhyNowSection({ isReviewMode }: WhyNowSectionProps) {
       id="pourquoi-maintenant"
       ref={sectionRef}
       aria-label="Pourquoi maintenant"
-      className="py-20 md:py-32 bg-[#F4F1EA] relative overflow-hidden"
+      className="py-20 md:py-32 bg-[#03070D] text-[#F4F4F6] relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 md:mb-16">
           <div className="max-w-2xl">
-            <div className="flex items-center gap-2 font-code text-xs text-[#17191D]/60 uppercase tracking-widest mb-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#17191D]/40" />
+            <div className="flex items-center gap-2 font-code text-xs text-[#43DDB0] uppercase tracking-widest mb-3">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#43DDB0] shadow-[0_0_6px_#43DDB0]" />
               <span>02 • Contexte & Veille</span>
             </div>
-            <h2 className="font-display italic text-4xl sm:text-5xl lg:text-6xl text-[#17191D] leading-tight">
+            <h2 className="font-display italic text-4xl sm:text-5xl lg:text-6xl text-white leading-tight">
               Pourquoi maintenant ?
             </h2>
-            <p className="font-body text-base sm:text-lg text-[#17191D]/70 mt-4">
+            <p className="font-body text-base sm:text-lg text-[#94A3B8] mt-4">
               La convergence d’évolutions réglementaires, de progrès techniques et d’exigences de transparence crée le moment opportun pour un outil local-first.
             </p>
           </div>
@@ -93,7 +93,7 @@ export function WhyNowSection({ isReviewMode }: WhyNowSectionProps) {
             onClick={handleFetchRegulatoryPulse}
             disabled={isUpdatingPulse}
             data-cursor="action"
-            className="self-start md:self-end flex items-center gap-2 px-4 py-2.5 rounded-full bg-[#101722] hover:bg-[#1D2736] text-[#F6F5F1] text-xs font-code transition focus:outline-none focus:ring-2 focus:ring-[#43DDB0]"
+            className="self-start md:self-end flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/[0.06] hover:bg-white/[0.12] text-white text-xs font-code border border-white/15 transition focus:outline-none focus:ring-2 focus:ring-[#43DDB0]"
           >
             <RefreshCw className={`w-3.5 h-3.5 text-[#43DDB0] ${isUpdatingPulse ? 'animate-spin' : ''}`} />
             <span>{isUpdatingPulse ? 'Recherche en cours...' : 'Actualiser la veille (Google Search)'}</span>
@@ -105,7 +105,7 @@ export function WhyNowSection({ isReviewMode }: WhyNowSectionProps) {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-10 p-6 rounded-2xl bg-[#0B111A] text-[#F6F5F1] border border-[#43DDB0]/30 shadow-xl"
+            className="mb-10 p-6 rounded-2xl bg-[#0A0F1A] text-[#F4F4F6] border border-[#43DDB0]/40 shadow-2xl"
           >
             <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-3">
               <span className="font-code text-xs text-[#43DDB0] flex items-center gap-1.5 font-medium">
@@ -116,7 +116,7 @@ export function WhyNowSection({ isReviewMode }: WhyNowSectionProps) {
                 Sources institutionnelles récentes
               </span>
             </div>
-            <p className="font-body text-sm text-white/85 leading-relaxed">
+            <p className="font-body text-sm text-white/90 leading-relaxed">
               {pulseSummary}
             </p>
 
@@ -125,7 +125,7 @@ export function WhyNowSection({ isReviewMode }: WhyNowSectionProps) {
         )}
 
         {pulseError && (
-          <div className="mb-8 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs font-body">
+          <div className="mb-8 p-3 rounded-xl bg-red-950/60 border border-red-800 text-red-200 text-xs font-body">
             {pulseError}
           </div>
         )}
@@ -161,21 +161,21 @@ export function WhyNowSection({ isReviewMode }: WhyNowSectionProps) {
                 initial={{ opacity: 0, y: 25 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.2 + idx * 0.2, ease: 'easeOut' }}
-                className="relative z-10 flex flex-col justify-between bg-[#E7E7E2]/60 rounded-2xl p-6 sm:p-8 border border-[#17191D]/10 hover:border-[#17191D]/30 transition shadow-sm"
+                className="relative z-10 flex flex-col justify-between bg-[#0A0F1A] rounded-2xl p-6 sm:p-8 border border-white/10 hover:border-white/20 transition shadow-2xl"
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="w-10 h-10 rounded-full bg-[#101722] text-[#43DDB0] flex items-center justify-center font-code text-sm font-semibold shadow-md ring-4 ring-[#F4F1EA]">
+                    <span className="w-10 h-10 rounded-full bg-white text-black flex items-center justify-center font-code text-sm font-bold shadow-md ring-4 ring-[#03070D]">
                       {s.step}
                     </span>
-                    <Icon className="w-5 h-5 text-[#17191D]/50" />
+                    <Icon className="w-5 h-5 text-[#43DDB0]" />
                   </div>
 
-                  <h3 className="font-display text-2xl text-[#17191D] mb-3 leading-snug">
+                  <h3 className="font-display text-2xl text-white mb-3 leading-snug">
                     {s.title}
                   </h3>
 
-                  <p className="font-body text-sm text-[#17191D]/80 leading-relaxed mb-4">
+                  <p className="font-body text-sm text-[#94A3B8] leading-relaxed mb-4">
                     {s.description}
                   </p>
 
@@ -183,9 +183,9 @@ export function WhyNowSection({ isReviewMode }: WhyNowSectionProps) {
                   {s.reviewFlag && (
                     <div
                       data-review="true"
-                      className={`text-xs p-2.5 rounded mb-4 ${
+                      className={`text-xs p-2.5 rounded-xl mb-4 ${
                         isReviewMode
-                          ? 'bg-[#E7A63A]/15 border border-[#E7A63A] text-[#8C5300] block'
+                          ? 'bg-amber-500/15 border border-amber-500/50 text-amber-200 block'
                           : 'hidden'
                       }`}
                     >
@@ -197,8 +197,8 @@ export function WhyNowSection({ isReviewMode }: WhyNowSectionProps) {
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-[#17191D]/10 text-xs font-code text-[#17191D]/60">
-                  <span className="text-[10px] uppercase block text-[#17191D]/40 mb-0.5">Source :</span>
+                <div className="pt-4 border-t border-white/10 text-xs font-code text-white/50">
+                  <span className="text-[10px] uppercase block text-[#43DDB0] mb-0.5">Source :</span>
                   {s.source}
                 </div>
               </motion.div>

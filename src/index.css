@@ -5,23 +5,23 @@
   --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-  --color-canvas: #F4F1EA;
-  --color-mist: #E7E7E2;
-  --color-ink: #101722;
-  --color-body: #17191D;
-  --color-light: #F6F5F1;
+  --color-canvas: #03070D;
+  --color-mist: #0A0F1A;
+  --color-ink: #FFFFFF;
+  --color-body: #94A3B8;
+  --color-light: #F4F4F6;
   --color-radar-mint: #43DDB0;
-  --color-alert-amber: #E7A63A;
+  --color-alert-amber: #FFB340;
 }
 
 :root {
-  --canvas: #F4F1EA;
-  --mist: #E7E7E2;
-  --ink: #101722;
-  --body-text: #17191D;
-  --light-text: #F6F5F1;
+  --canvas: #03070D;
+  --mist: #0A0F1A;
+  --ink: #FFFFFF;
+  --body-text: #94A3B8;
+  --light-text: #F4F4F6;
   --radar-mint: #43DDB0;
-  --alert-amber: #E7A63A;
+  --alert-amber: #FFB340;
 }
 
 /* Custom utility styles */

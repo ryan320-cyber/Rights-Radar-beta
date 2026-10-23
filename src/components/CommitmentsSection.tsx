@@ -49,18 +49,18 @@ export function CommitmentsSection() {
       id="engagements"
       ref={sectionRef}
       aria-label="Engagements de transparence"
-      className="py-20 md:py-32 bg-[#F4F1EA] border-b border-[#17191D]/10 relative overflow-hidden"
+      className="py-20 md:py-32 bg-[#060A12] border-b border-white/[0.08] text-[#F4F4F6] relative overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="mb-12 md:mb-16 max-w-3xl">
-          <div className="flex items-center gap-2 font-code text-xs text-[#17191D]/60 uppercase tracking-widest mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#17191D]/40" />
+          <div className="flex items-center gap-2 font-code text-xs text-[#43DDB0] uppercase tracking-widest mb-3">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#43DDB0] shadow-[0_0_6px_#43DDB0]" />
             <span>04 • Déontologie</span>
           </div>
-          <h2 className="font-display italic text-4xl sm:text-5xl lg:text-6xl text-[#17191D] leading-tight">
+          <h2 className="font-display italic text-4xl sm:text-5xl lg:text-6xl text-white leading-tight">
             Des engagements stricts et vérifiables.
           </h2>
-          <p className="font-body text-base sm:text-lg text-[#17191D]/70 mt-4 max-w-2xl">
+          <p className="font-body text-base sm:text-lg text-[#94A3B8] mt-4 max-w-2xl">
             La confiance repose sur des limites précises. Voici ce que l’outil est conçu pour accomplir, et ce qu’il refuse formellement de faire.
           </p>
         </div>
@@ -71,13 +71,13 @@ export function CommitmentsSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease: 'easeOut' }}
-            className="bg-[#E7E7E2]/70 rounded-3xl p-6 sm:p-10 border border-[#17191D]/10 shadow-sm"
+            className="bg-[#0A0F1A] rounded-3xl p-6 sm:p-10 border border-white/10 shadow-2xl hover:border-white/20 transition"
           >
-            <div className="flex items-center gap-3 pb-4 border-b border-[#17191D]/10 mb-6">
-              <span className="w-8 h-8 rounded-full bg-[#43DDB0] text-[#101722] flex items-center justify-center font-bold">
+            <div className="flex items-center gap-3 pb-4 border-b border-white/10 mb-6">
+              <span className="w-8 h-8 rounded-full bg-[#43DDB0] text-black flex items-center justify-center font-bold shadow-[0_0_12px_rgba(67,221,176,0.5)]">
                 <Check className="w-4 h-4 stroke-[3]" />
               </span>
-              <h3 className="font-display text-2xl sm:text-3xl text-[#17191D]">
+              <h3 className="font-display text-2xl sm:text-3xl text-white">
                 Ce que nous faisons
               </h3>
             </div>
@@ -85,14 +85,14 @@ export function CommitmentsSection() {
             <ul className="space-y-6">
               {doList.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-[#43DDB0]/30 text-[#17191D] flex items-center justify-center shrink-0 mt-0.5">
-                    <Check className="w-3.5 h-3.5 text-[#101722] stroke-[2.5]" />
+                  <div className="w-5 h-5 rounded-full bg-[#43DDB0]/20 text-[#43DDB0] flex items-center justify-center shrink-0 mt-0.5 border border-[#43DDB0]/30">
+                    <Check className="w-3.5 h-3.5 text-[#43DDB0] stroke-[2.5]" />
                   </div>
                   <div>
-                    <h4 className="font-body font-semibold text-sm text-[#17191D] mb-0.5">
+                    <h4 className="font-body font-semibold text-sm text-white mb-0.5">
                       {item.title}
                     </h4>
-                    <p className="font-body text-xs text-[#17191D]/70 leading-relaxed">
+                    <p className="font-body text-xs text-[#94A3B8] leading-relaxed">
                       {item.desc}
                     </p>
                   </div>
@@ -106,13 +106,13 @@ export function CommitmentsSection() {
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
-            className="bg-[#0B111A] text-[#F6F5F1] rounded-3xl p-6 sm:p-10 border border-white/10 shadow-xl"
+            className="bg-[#0A0F1A] text-[#F4F4F6] rounded-3xl p-6 sm:p-10 border border-white/10 shadow-2xl hover:border-white/20 transition"
           >
             <div className="flex items-center gap-3 pb-4 border-b border-white/10 mb-6">
-              <span className="w-8 h-8 rounded-full bg-[#E7A63A] text-[#101722] flex items-center justify-center font-bold">
+              <span className="w-8 h-8 rounded-full bg-[#FFB340] text-black flex items-center justify-center font-bold shadow-[0_0_12px_rgba(255,179,64,0.5)]">
                 <X className="w-4 h-4 stroke-[3]" />
               </span>
-              <h3 className="font-display text-2xl sm:text-3xl text-[#F6F5F1]">
+              <h3 className="font-display text-2xl sm:text-3xl text-white">
                 Ce que nous ne faisons pas
               </h3>
             </div>
@@ -120,14 +120,14 @@ export function CommitmentsSection() {
             <ul className="space-y-6">
               {dontList.map((item, idx) => (
                 <li key={idx} className="flex items-start gap-3">
-                  <div className="w-5 h-5 rounded-full bg-white/15 text-white flex items-center justify-center shrink-0 mt-0.5">
-                    <X className="w-3.5 h-3.5 text-[#E7A63A] stroke-[2.5]" />
+                  <div className="w-5 h-5 rounded-full bg-white/10 text-white flex items-center justify-center shrink-0 mt-0.5 border border-white/15">
+                    <X className="w-3.5 h-3.5 text-[#FFB340] stroke-[2.5]" />
                   </div>
                   <div>
-                    <h4 className="font-body font-semibold text-sm text-[#F6F5F1] mb-0.5">
+                    <h4 className="font-body font-semibold text-sm text-white mb-0.5">
                       {item.title}
                     </h4>
-                    <p className="font-body text-xs text-white/60 leading-relaxed">
+                    <p className="font-body text-xs text-[#94A3B8] leading-relaxed">
                       {item.desc}
                     </p>
                   </div>
@@ -138,9 +138,9 @@ export function CommitmentsSection() {
         </div>
 
         {/* Required Mandatory Footer Line */}
-        <div className="mt-12 p-4 rounded-2xl bg-[#E7A63A]/10 border border-[#E7A63A]/30 flex items-center gap-3">
-          <ShieldAlert className="w-5 h-5 text-[#E7A63A] shrink-0" />
-          <p className="font-body text-xs sm:text-sm text-[#17191D]/90 font-medium">
+        <div className="mt-12 p-4 rounded-2xl bg-[#FFB340]/10 border border-[#FFB340]/30 flex items-center gap-3">
+          <ShieldAlert className="w-5 h-5 text-[#FFB340] shrink-0" />
+          <p className="font-body text-xs sm:text-sm text-[#FFB340] font-medium">
             Rights Radar ne remplace pas un avocat et aucune indemnisation n’est assurée.
           </p>
         </div>

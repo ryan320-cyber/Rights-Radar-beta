@@ -29,23 +29,23 @@ export function FooterSection({ onOpenPrivacy }: FooterSectionProps) {
     <footer
       id="footer"
       aria-label="Pied de page et mentions"
-      className="bg-[#0B0F17] text-[#F6F5F1] pt-16 pb-12 border-t border-white/10"
+      className="bg-[#020509] text-[#F4F4F6] pt-16 pb-12 border-t border-white/[0.08]"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 pb-12 border-b border-white/10">
           {/* Brand Info */}
           <div className="md:col-span-5 space-y-4">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-[#43DDB0]" />
-              <span className="font-display italic text-2xl tracking-wide text-[#F6F5F1]">
+              <span className="w-2 h-2 rounded-full bg-[#43DDB0] shadow-[0_0_8px_#43DDB0]" />
+              <span className="font-display italic text-2xl tracking-wide text-white">
                 Rights Radar
               </span>
             </div>
-            <p className="font-body text-xs text-white/60 leading-relaxed max-w-sm">
+            <p className="font-body text-xs text-[#94A3B8] leading-relaxed max-w-sm">
               Projet d’outil local-first d’analyse documentaire et d’estimation des droits des passagers aériens. Conception transparente, données conservées sur votre appareil.
             </p>
             {/* Mandatory legal disclaimer */}
-            <div className="p-3 rounded bg-white/5 border border-white/10 text-xs font-body text-[#E7A63A] max-w-sm">
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-xs font-body text-[#FFB340] max-w-sm">
               Ce site ne constitue pas un conseil juridique.
             </div>
           </div>

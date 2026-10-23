@@ -110,7 +110,7 @@ export function WaitlistSection({ user }: WaitlistSectionProps) {
       id="inscription"
       ref={sectionRef}
       aria-label="Recherche de participants et liste d’attente"
-      className="py-20 md:py-32 bg-[#080C14] text-[#F6F5F1] relative overflow-hidden"
+      className="py-20 md:py-32 bg-[#060A12] text-[#F4F4F6] relative overflow-hidden"
     >
       {/* Background Signal Convergence Visual Atmosphere */}
       <div aria-hidden="true" className="absolute inset-0 pointer-events-none opacity-20 -z-0 flex items-center justify-center">
@@ -122,13 +122,13 @@ export function WaitlistSection({ user }: WaitlistSectionProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="mb-12 md:mb-16 max-w-3xl">
           <div className="flex items-center gap-2 font-code text-xs text-[#43DDB0] uppercase tracking-widest mb-3">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#43DDB0]" />
+            <span className="w-1.5 h-1.5 rounded-full bg-[#43DDB0] shadow-[0_0_6px_#43DDB0]" />
             <span>07 • Participation & Liste d'attente</span>
           </div>
-          <h2 className="font-display italic text-4xl sm:text-5xl lg:text-6xl text-[#F6F5F1] leading-tight">
+          <h2 className="font-display italic text-4xl sm:text-5xl lg:text-6xl text-white leading-tight">
             Pour faire progresser Rights Radar, nous recherchons des participants.
           </h2>
-          <p className="font-body text-base sm:text-lg text-white/70 mt-4 max-w-2xl">
+          <p className="font-body text-base sm:text-lg text-[#94A3B8] mt-4 max-w-2xl">
             Le projet se construit en dialogue avec de futurs usagers et des experts du secteur. Rejoignez la liste d’attente pour être informé des avancées.
           </p>
         </div>
@@ -143,14 +143,14 @@ export function WaitlistSection({ user }: WaitlistSectionProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.1 * idx, ease: 'easeOut' }}
-                className="bg-white/5 rounded-3xl p-6 border border-white/10 flex flex-col justify-between hover:border-[#43DDB0]/40 transition group"
+                className="bg-[#0A0F1A] rounded-3xl p-6 border border-white/10 flex flex-col justify-between hover:border-white/20 shadow-xl transition group"
               >
                 <div>
-                  <div className="w-10 h-10 rounded-xl bg-[#131D2D] text-[#43DDB0] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                  <div className="w-10 h-10 rounded-xl bg-white/10 text-[#43DDB0] flex items-center justify-center mb-4 group-hover:scale-105 transition-transform border border-white/10">
                     <Icon className="w-5 h-5" />
                   </div>
-                  <h3 className="font-display text-xl text-[#F6F5F1] mb-2">{r.title}</h3>
-                  <p className="font-body text-xs text-white/60 leading-relaxed">{r.desc}</p>
+                  <h3 className="font-display text-xl text-white mb-2">{r.title}</h3>
+                  <p className="font-body text-xs text-[#94A3B8] leading-relaxed">{r.desc}</p>
                 </div>
               </motion.div>
             );
@@ -162,7 +162,7 @@ export function WaitlistSection({ user }: WaitlistSectionProps) {
           initial={{ opacity: 0, scale: 0.96 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.7, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="bg-[#0E1520] rounded-3xl p-6 sm:p-12 border border-[#43DDB0]/30 max-w-3xl mx-auto shadow-2xl relative"
+          className="bg-[#0A0F1A] rounded-3xl p-6 sm:p-12 border border-white/15 max-w-3xl mx-auto shadow-2xl relative"
         >
           {isSuccess ? (
             <div
@@ -272,7 +272,7 @@ export function WaitlistSection({ user }: WaitlistSectionProps) {
                 type="submit"
                 disabled={isSubmitting}
                 data-cursor="action"
-                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-[#43DDB0] hover:bg-[#38C69D] disabled:opacity-50 text-[#080C14] font-code text-sm font-semibold transition focus:outline-none focus:ring-2 focus:ring-white shadow-[0_0_20px_rgba(67,221,176,0.3)] hover:shadow-[0_0_30px_rgba(67,221,176,0.5)]"
+                className="w-full flex items-center justify-center gap-2 py-4 px-6 rounded-full bg-white hover:bg-neutral-200 disabled:opacity-50 text-black font-code text-sm font-semibold transition active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#43DDB0] shadow-[0_0_25px_rgba(255,255,255,0.15)]"
               >
                 {isSubmitting ? (
                   <span>Enregistrement en cours...</span>

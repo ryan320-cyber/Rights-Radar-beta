@@ -51,7 +51,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4F1EA] text-[#17191D] font-body selection:bg-[#43DDB0]/30 selection:text-[#101722] flex flex-col">
+    <div className="min-h-screen bg-[#03070D] text-[#F4F4F6] font-body selection:bg-[#43DDB0]/30 selection:text-white flex flex-col">
       {/* Desktop Art-directed Custom Reticle Cursor */}
       <CustomCursor />
 
