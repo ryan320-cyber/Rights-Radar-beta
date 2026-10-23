@@ -1,0 +1,92 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() &&
+        request.auth.token.email == 'rhilanerayaneyasmine@gmail.com' &&
+        request.auth.token.email_verified == true;
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email']) &&
+        data.keys().hasOnly(['uid', 'email', 'displayName', 'photoURL', 'createdAt', 'updatedAt']) &&
+        data.uid is string && data.uid.size() <= 128 &&
+        data.email is string && data.email.size() <= 256 &&
+        (!('displayName' in data) || (data.displayName is string && data.displayName.size() <= 128)) &&
+        (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 512));
+    }
+
+    function isValidWaitlist(data) {
+      return data.keys().hasAll(['email', 'usageFrequency']) &&
+        data.keys().hasOnly(['email', 'usageFrequency', 'createdAt', 'userId', 'source']) &&
+        data.email is string && data.email.size() >= 3 && data.email.size() <= 256 &&
+        data.usageFrequency is string && data.usageFrequency.size() <= 64 &&
+        (!('userId' in data) || (data.userId is string && data.userId.size() <= 128)) &&
+        (!('source' in data) || (data.source is string && data.source.size() <= 64));
+    }
+
+    function isValidInspection(data) {
+      return data.keys().hasAll(['userId', 'flightCode', 'route']) &&
+        data.keys().hasOnly(['userId', 'flightCode', 'route', 'departureDate', 'disruptionType', 'delayHours', 'estimatedAmount', 'deadlineDate', 'notes', 'createdAt', 'updatedAt']) &&
+        data.userId is string && data.userId.size() <= 128 &&
+        data.flightCode is string && data.flightCode.size() <= 32 &&
+        data.route is string && data.route.size() <= 128 &&
+        (!('departureDate' in data) || (data.departureDate is string && data.departureDate.size() <= 32)) &&
+        (!('disruptionType' in data) || (data.disruptionType is string && data.disruptionType.size() <= 64)) &&
+        (!('delayHours' in data) || data.delayHours is number) &&
+        (!('estimatedAmount' in data) || data.estimatedAmount is number) &&
+        (!('deadlineDate' in data) || (data.deadlineDate is string && data.deadlineDate.size() <= 32)) &&
+        (!('notes' in data) || (data.notes is string && data.notes.size() <= 500));
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow create: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming());
+      allow update: if isSignedIn() && request.auth.uid == userId && isValidUser(incoming()) && incoming().uid == existing().uid;
+    }
+
+    // Waitlist submissions
+    match /waitlist_submissions/{submissionId} {
+      allow create: if isValidId(submissionId) && isValidWaitlist(incoming());
+      allow read: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Flight inspections & claim tracking
+    match /inspections/{inspectionId} {
+      allow get: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(inspectionId) && incoming().userId == request.auth.uid && isValidInspection(incoming());
+      allow update: if isSignedIn() && isValidId(inspectionId) && existing().userId == request.auth.uid && incoming().userId == request.auth.uid && isValidInspection(incoming());
+      allow delete: if isSignedIn() && isValidId(inspectionId) && (existing().userId == request.auth.uid || isAdmin());
+    }
+
+    // Test connection document for verifying connectivity
+    match /test/connection {
+      allow get: if true;
+    }
+  }
+}

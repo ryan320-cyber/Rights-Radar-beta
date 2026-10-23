@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rights Radar</title>
+  <meta name="description" content="Le radar de vos droits en voyage. Inscription à la liste d'attente." />
+  <meta property="og:title" content="Rights Radar" />
+  <meta property="og:description" content="Le radar de vos droits en voyage. Inscription à la liste d'attente." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Typography: Instrument Serif, IBM Plex Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* 4.1 Palette and surface system */
+    :root {
+      --canvas: #F4F1EA;
+      --mist: #E7E7E2;
+      --ink: #101722;
+      --body-text: #17191D;
+      --light-text: #F6F5F1;
+      --stone: #6B7280;
+      --radar-mint: #43DDB0;
+      --alert-amber: #E7A63A;
+
+      --font-serif: "Instrument Serif", Georgia, serif;
+      --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "JetBrains Mono", monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--canvas);
+      color: var(--body-text);
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 0 40px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .container {
+        padding: 0 64px;
+      }
+    }
+
+    .font-display { font-family: var(--font-serif); }
+    .font-code { font-family: var(--font-mono); }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 1rem;
+      background: var(--ink);
+      color: var(--light-text);
+      padding: 0.5rem 1rem;
+      z-index: 1000;
+      border: 1px solid var(--radar-mint);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    /* Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(244, 241, 234, 0.9);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(23, 25, 29, 0.1);
+      padding: 1rem 0;
+    }
+    .header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.75rem;
+      letter-spacing: -0.02em;
+    }
+    .brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--radar-mint);
+    }
+    .btn-menu {
+      background: transparent;
+      border: 1px solid rgba(23, 25, 29, 0.2);
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-menu:hover, .btn-menu:focus {
+      border-color: var(--ink);
+      outline: none;
+    }
+
+    /* Review badge */
+    .review-flag {
+      display: none;
+      background: rgba(231, 166, 58, 0.15);
+      border: 1px solid var(--alert-amber);
+      color: #9A5B00;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 2px;
+      vertical-align: middle;
+      margin-left: 6px;
+    }
+    body[data-review-mode="true"] .review-flag {
+      display: inline-block;
+    }
+
+    /* Section padding */
+    section {
+      padding: 5rem 0;
+    }
+    @media (min-width: 768px) {
+      section {
+        padding: 7rem 0;
+      }
+    }
+
+    /* Hero layout */
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+    @media (min-width: 1024px) {
+      .hero-grid {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+    }
+
+    .hero-h1 {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      line-height: 1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-desc {
+      font-size: clamp(1.1rem, 2vw, 1.35rem);
+      color: rgba(23, 25, 29, 0.8);
+      margin-bottom: 2rem;
+      max-width: 36rem;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--ink);
+      color: var(--light-text);
+      padding: 0.85rem 1.75rem;
+      border-radius: 9999px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 500;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-primary:hover, .btn-primary:focus {
+      background: #1C2736;
+      outline: none;
+    }
+
+    /* Radar Canvas Container */
+    .radar-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 400px;
+    }
+    canvas#radar-canvas {
+      width: 100%;
+      max-width: 520px;
+      aspect-ratio: 1 / 1;
+      border-radius: 50%;
+      background: #0D141F;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      cursor: grab;
+    }
+
+    /* Departures board */
+    .departures-board {
+      background: var(--ink);
+      color: var(--light-text);
+      border-radius: 16px;
+      padding: 2rem;
+      font-family: var(--font-mono);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .board-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .board-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.85rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .badge-mint {
+      background: rgba(67, 221, 176, 0.2);
+      color: var(--radar-mint);
+      border: 1px solid rgba(67, 221, 176, 0.4);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    /* Stat Box */
+    .stat-card {
+      background: var(--canvas);
+      border: 1px solid rgba(23, 25, 29, 0.1);
+      border-radius: 16px;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .stat-number {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 5.5rem;
+      line-height: 0.9;
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* Timeline stops */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .timeline-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .timeline-card {
+      background: rgba(231, 231, 226, 0.6);
+      border: 1px solid rgba(23, 25, 29, 0.1);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* 5 steps nodes */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    @media (min-width: 640px) {
+      .steps-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (min-width: 1024px) {
+      .steps-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+    .step-node {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(67, 221, 176, 0.2);
+      color: var(--radar-mint);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    /* Mockup deck */
+    .mockup-deck {
+      background: #151F2E;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2rem;
+      color: var(--light-text);
+    }
+    .badge-maquette {
+      background: rgba(231, 166, 58, 0.2);
+      color: var(--alert-amber);
+      border: 1px solid rgba(231, 166, 58, 0.4);
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+    }
+
+    /* Commitments columns */
+    .commitments-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 768px) {
+      .commitments-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .commit-card {
+      border-radius: 16px;
+      padding: 2rem;
+    }
+
+    /* Comparison bars */
+    .bar-track {
+      width: 100%;
+      height: 36px;
+      background: var(--mist);
+      border-radius: 8px;
+      overflow: hidden;
+      display: flex;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      margin: 0.5rem 0 1rem;
+    }
+    .bar-amber {
+      background: var(--alert-amber);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 0%;
+      transition: width 1s ease-out;
+    }
+    .bar-dark {
+      background: var(--ink);
+      color: var(--light-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 0%;
+      transition: width 1s ease-out;
+    }
+    .bar-mint {
+      background: var(--radar-mint);
+      color: var(--ink);
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 0%;
+      transition: width 1s ease-out;
+    }
+
+    /* Needs 2x2 grid */
+    .needs-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .needs-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .need-tile {
+      background: rgba(231, 231, 226, 0.5);
+      border: 1px solid rgba(23, 25, 29, 0.1);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: border-color 0.2s ease;
+    }
+    .need-tile:hover, .need-tile:focus-within {
+      border-color: var(--body-text);
+    }
+
+    /* Waitlist form */
+    .waitlist-card {
+      background: #151F2E;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 2.5rem;
+      color: var(--light-text);
+      max-width: 640px;
+      margin: 0 auto;
+    }
+    .form-input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      background: #0A0F17;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--light-text);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      margin-top: 0.4rem;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--radar-mint);
+    }
+    .radio-group {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .radio-group {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .radio-label {
+      display: flex;
+      flex-direction: column;
+      padding: 0.85rem;
+      border-radius: 8px;
+      background: #0A0F17;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .radio-label input {
+      margin-top: 0.5rem;
+      accent-color: var(--radar-mint);
+    }
+
+    /* Menu Overlay */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(16, 23, 34, 0.98);
+      backdrop-filter: blur(12px);
+      color: var(--light-text);
+      display: none;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2rem;
+    }
+    .menu-overlay.is-open {
+      display: flex;
+    }
+
+    /* S0 Opening Screen */
+    .opening-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: var(--ink);
+      color: var(--light-text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    /* Reduced motion adjustments */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      .opening-screen {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Passer au contenu principal</a>
+
+  <!-- S0: Optional Immersive Opening -->
+  <aside id="s0-opening" class="opening-screen" aria-label="Écran d'entrée">
+    <div style="width: 70px; height: 70px; border-radius: 50%; border: 1px solid var(--radar-mint); display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+      <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--radar-mint);"></div>
+    </div>
+    <h1 class="font-display" style="font-size: 3rem; font-style: italic; margin-bottom: 0.5rem;">Rights Radar</h1>
+    <p style="color: rgba(255,255,255,0.6); margin-bottom: 2rem; font-size: 0.95rem;">Le radar de vos droits en voyage.</p>
+    <button type="button" id="btn-enter" class="btn-primary" style="background: var(--light-text); color: var(--ink); font-weight: 600;">
+      Entrer
+    </button>
+  </aside>
+
+  <!-- Navigation Header -->
+  <header>
+    <div class="container header-inner">
+      <a href="#" class="brand">
+        <span class="brand-dot"></span>
+        <span>Rights Radar</span>
+      </a>
+
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <span id="review-header-badge" class="review-flag" style="display: none;">[MODE RELECTURE ACTIF]</span>
+        <button type="button" class="btn-menu" id="open-menu-btn" aria-label="Ouvrir le menu">Menu</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fullscreen Menu Overlay -->
+  <nav id="menu-overlay" class="menu-overlay" aria-label="Menu principal" role="dialog" aria-modal="true">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem;">
+      <span class="font-display" style="font-style: italic; font-size: 1.5rem;">Rights Radar</span>
+      <button type="button" id="close-menu-btn" class="btn-menu" style="color: #fff; border-color: rgba(255,255,255,0.3);">Fermer</button>
+    </div>
+
+    <div style="max-width: 600px; width: 100%; margin: auto;">
+      <ul style="list-style: none; display: flex; flex-direction: column; gap: 1.25rem;">
+        <li><a href="#probleme" class="menu-link" style="display: flex; gap: 1.5rem; font-size: 1.75rem;" class="font-display"><span class="font-code" style="color: var(--radar-mint); font-size: 1rem;">01</span> Problème</a></li>
+        <li><a href="#pourquoi-maintenant" class="menu-link" style="display: flex; gap: 1.5rem; font-size: 1.75rem;" class="font-display"><span class="font-code" style="color: var(--radar-mint); font-size: 1rem;">02</span> Pourquoi maintenant</a></li>
+        <li><a href="#solution" class="menu-link" style="display: flex; gap: 1.5rem; font-size: 1.75rem;" class="font-display"><span class="font-code" style="color: var(--radar-mint); font-size: 1rem;">03</span> Solution</a></li>
+        <li><a href="#engagements" class="menu-link" style="display: flex; gap: 1.5rem; font-size: 1.75rem;" class="font-display"><span class="font-code" style="color: var(--radar-mint); font-size: 1rem;">04</span> Engagements</a></li>
+        <li><a href="#comparaison" class="menu-link" style="display: flex; gap: 1.5rem; font-size: 1.75rem;" class="font-display"><span class="font-code" style="color: var(--radar-mint); font-size: 1rem;">05</span> Comparaison</a></li>
+        <li><a href="#besoins" class="menu-link" style="display: flex; gap: 1.5rem; font-size: 1.75rem;" class="font-display"><span class="font-code" style="color: var(--radar-mint); font-size: 1rem;">06</span> Besoins</a></li>
+        <li><a href="#inscription" class="menu-link" style="display: flex; gap: 1.5rem; font-size: 1.75rem;" class="font-display"><span class="font-code" style="color: var(--radar-mint); font-size: 1rem;">07</span> Inscription</a></li>
+      </ul>
+    </div>
+
+    <div style="font-family: var(--font-mono); font-size: 0.75rem; color: rgba(255,255,255,0.4); text-align: center;">
+      Touche Échap pour fermer • Navigation Rights Radar
+    </div>
+  </nav>
+
+  <!-- Main Content Landmark -->
+  <main id="main-content">
+    <!-- S1: Hero Section -->
+    <section id="s1-hero" aria-label="Présentation">
+      <div class="container hero-grid">
+        <div>
+          <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem; letter-spacing: 0.05em;">
+            Outil local-first • En phase de recherche
+          </div>
+          <!-- Exactly one H1 for page -->
+          <h1 class="hero-h1">Le radar de vos droits en voyage.</h1>
+          <p class="hero-desc">
+            Il repère les vols qui peuvent ouvrir un droit à indemnisation, estime le montant possible et prépare votre réclamation. Vos données restent sur votre appareil.
+          </p>
+          <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem;">
+            <a href="#inscription" class="btn-primary">Rejoindre la liste d’attente</a>
+          </div>
+          <div style="font-size: 0.8rem; color: rgba(23, 25, 29, 0.7); background: rgba(231, 231, 226, 0.6); padding: 0.75rem 1rem; border-radius: 8px; max-width: 460px;">
+            <strong>Confidentialité locale :</strong> Vos réservations et courriels sont traités directement dans votre navigateur. Aucune donnée personnelle n'est téléversée sur un serveur distant.
+          </div>
+        </div>
+
+        <div class="radar-wrapper">
+          <canvas id="radar-canvas" aria-hidden="true" width="520" height="520"></canvas>
+          <div class="sr-only" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0);">
+            Radar spatial illustrant la détection de deux vols avec retards supérieurs à 3 heures, estimés à 250 € et 600 €.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S2: The problem -->
+    <section id="probleme" style="background: rgba(231, 231, 226, 0.4); border-top: 1px solid rgba(23, 25, 29, 0.1); border-bottom: 1px solid rgba(23, 25, 29, 0.1);">
+      <div class="container">
+        <div style="max-width: 720px; margin-bottom: 3rem;">
+          <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--stone); margin-bottom: 0.5rem;">01 • Constat</div>
+          <h2 class="font-display" style="font-size: clamp(2rem, 4vw, 3.25rem); font-style: italic; line-height: 1.1;">
+            Le droit existe. Pourtant, peu le réclament.
+          </h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr; gap: 2rem;" class="hero-grid">
+          <!-- Left: Departures board -->
+          <div class="departures-board">
+            <div class="board-header">
+              <span>DÉPARTS CONSTATÉS</span>
+              <span class="badge-maquette" style="background: rgba(255,255,255,0.1); color: #fff;">Tableau fictif, à titre illustratif</span>
+            </div>
+            <div class="board-row">
+              <div><strong style="color: var(--radar-mint);">AF 7632</strong> &nbsp; MADRID (MAD)</div>
+              <div><span style="color: var(--alert-amber);">+3h35</span> &nbsp; <span class="badge-mint">À réclamer (250 €)</span></div>
+            </div>
+            <div class="board-row">
+              <div><strong style="color: var(--radar-mint);">LH 1045</strong> &nbsp; FRANCFORT (FRA)</div>
+              <div><span style="color: var(--alert-amber);">+4h10</span> &nbsp; <span class="badge-mint">À réclamer (250 €)</span></div>
+            </div>
+            <div class="board-row">
+              <div><strong style="color: var(--radar-mint);">BA 0308</strong> &nbsp; LONDRES (LHR)</div>
+              <div><span style="color: var(--alert-amber);">+3h05</span> &nbsp; <span class="badge-mint">À réclamer (250 €)</span></div>
+            </div>
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.5); margin-top: 1rem;">
+              Exemples illustratifs. Les indemnisations dépendent de l’absence de circonstances extraordinaires.
+            </div>
+          </div>
+
+          <!-- Right: Statistic -->
+          <div class="stat-card">
+            <div>
+              <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--stone); margin-bottom: 1rem;">
+                Taux indicatif de non-recours
+              </div>
+              <div class="stat-number" id="stat-counter">0 %</div>
+              <p style="font-size: 0.95rem; color: rgba(23, 25, 29, 0.8); margin: 1.5rem 0;">
+                Des usagers éligibles ne demandent pas l'indemnisation à laquelle ils ont droit en raison de démarches perçues comme fastidieuses ou méconnues.
+              </p>
+            </div>
+            <div style="font-size: 0.75rem; font-family: var(--font-mono); color: rgba(23, 25, 29, 0.7); border-top: 1px solid rgba(23, 25, 29, 0.1); padding-top: 1rem;">
+              Source : <strong>Transport Focus, 2026 [organisme public] (trains, pas avions)</strong>
+              <div style="font-family: var(--font-sans); color: rgba(23, 25, 29, 0.6); margin-top: 0.25rem;">
+                Donnée officielle relative au transport ferroviaire au Royaume-Uni, citée à titre d’exemple du renoncement général aux droits.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S3: Why now -->
+    <section id="pourquoi-maintenant">
+      <div class="container">
+        <div style="max-width: 720px; margin-bottom: 3rem;">
+          <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--stone); margin-bottom: 0.5rem;">02 • Contexte</div>
+          <h2 class="font-display" style="font-size: clamp(2rem, 4vw, 3.25rem); font-style: italic; line-height: 1.1;">
+            Pourquoi maintenant ?
+          </h2>
+        </div>
+
+        <div class="timeline-grid">
+          <div class="timeline-card">
+            <div>
+              <div class="font-code" style="color: var(--radar-mint); font-weight: 600; margin-bottom: 0.5rem;">01</div>
+              <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.75rem;">Évolution des règles européennes</h3>
+              <p style="font-size: 0.85rem; color: rgba(23, 25, 29, 0.8); margin-bottom: 1rem;">
+                Les instances européennes examinent la révision du règlement (CE) 261/2004 afin de clarifier les règles applicables.
+                <span class="review-flag" data-review="true">
+                  <!-- [À VÉRIFIER] : accord provisoire annoncé en juin 2026. Non adopté en juillet 2026. -->
+                  [À VÉRIFIER : accord provisoire annoncé en juin 2026]
+                </span>
+              </p>
+            </div>
+            <div style="font-size: 0.75rem; font-family: var(--font-mono); color: rgba(23, 25, 29, 0.6); border-top: 1px solid rgba(23, 25, 29, 0.1); padding-top: 0.75rem;">
+              Source : Conseil de l'Union européenne & Parlement européen, 2026 [organisme public]
+            </div>
+          </div>
+
+          <div class="timeline-card">
+            <div>
+              <div class="font-code" style="color: var(--radar-mint); font-weight: 600; margin-bottom: 0.5rem;">02</div>
+              <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.75rem;">Nouvelles capacités techniques</h3>
+              <p style="font-size: 0.85rem; color: rgba(23, 25, 29, 0.8); margin-bottom: 1rem;">
+                Des modèles légers exécutables localement permettent désormais d'extraire les données d'un billet sans exposer vos données personnelles à des serveurs tiers.
+              </p>
+            </div>
+            <div style="font-size: 0.75rem; font-family: var(--font-mono); color: rgba(23, 25, 29, 0.6); border-top: 1px solid rgba(23, 25, 29, 0.1); padding-top: 0.75rem;">
+              Source : Recherche Edge AI & WebAssembly, 2026 [académique]
+            </div>
+          </div>
+
+          <div class="timeline-card">
+            <div>
+              <div class="font-code" style="color: var(--radar-mint); font-weight: 600; margin-bottom: 0.5rem;">03</div>
+              <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.75rem;">Vigilance réglementaire</h3>
+              <p style="font-size: 0.85rem; color: rgba(23, 25, 29, 0.8); margin-bottom: 1rem;">
+                Attention accrue portée aux interfaces trompeuses et aux commissions disproportionnées prélevées par des intermédiaires commerciaux.
+              </p>
+            </div>
+            <div style="font-size: 0.75rem; font-family: var(--font-mono); color: rgba(23, 25, 29, 0.6); border-top: 1px solid rgba(23, 25, 29, 0.1); padding-top: 0.75rem;">
+              Source : Commission européenne, Digital Fairness, 2024-2026 [organisme public]
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S4: The solution -->
+    <section id="solution" style="background: var(--ink); color: var(--light-text);">
+      <div class="container">
+        <div style="max-width: 720px; margin-bottom: 3rem;">
+          <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--radar-mint); margin-bottom: 0.5rem;">03 • Déroulement</div>
+          <h2 class="font-display" style="font-size: clamp(2rem, 4vw, 3.25rem); font-style: italic; line-height: 1.1;">
+            Cinq étapes, et vous gardez la main.
+          </h2>
+          <p style="color: rgba(255,255,255,0.7); margin-top: 1rem;">
+            Aucun envoi sans votre validation formelle. L'outil vous assiste, vous décidez.
+          </p>
+        </div>
+
+        <!-- 5 nodes -->
+        <div class="steps-grid">
+          <div class="step-node">
+            <div class="step-num">1</div>
+            <h3 class="font-display" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Importer</h3>
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">Glissez votre confirmation de vol ou billet PDF.</p>
+          </div>
+          <div class="step-node">
+            <div class="step-num">2</div>
+            <h3 class="font-display" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Vérifier le vol</h3>
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">Recoupement des horaires effectifs d'arrivée.</p>
+          </div>
+          <div class="step-node">
+            <div class="step-num">3</div>
+            <h3 class="font-display" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Estimer</h3>
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">Barème indicatif CE 261/2004 (250 €, 400 € ou 600 €).</p>
+          </div>
+          <div class="step-node">
+            <div class="step-num">4</div>
+            <h3 class="font-display" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Préparer</h3>
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">Modèle de courrier juridique complet à relire.</p>
+          </div>
+          <div class="step-node">
+            <div class="step-num">5</div>
+            <h3 class="font-display" style="font-size: 1.25rem; margin-bottom: 0.25rem;">Suivre</h3>
+            <p style="font-size: 0.75rem; color: rgba(255,255,255,0.6);">Rappels des délais légaux de prescription.</p>
+          </div>
+        </div>
+
+        <!-- Stacked Deck Mockup -->
+        <div class="mockup-deck">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+            <span class="font-display" style="font-size: 1.5rem;">Aperçu des interfaces prévues</span>
+            <span class="badge-maquette">Maquette</span>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;" class="hero-grid">
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; font-family: var(--font-mono); font-size: 0.8rem;">
+              <div style="color: var(--radar-mint); margin-bottom: 0.5rem;">[Maquette] Détection locale : Vol AF 7632</div>
+              <div style="color: rgba(255,255,255,0.7); margin-bottom: 0.5rem;">Trajet : Madrid (MAD) → Paris (CDG)</div>
+              <div style="color: var(--alert-amber); margin-bottom: 0.5rem;">Retard à l'arrivée : +3h35</div>
+              <div style="background: rgba(67, 221, 176, 0.1); padding: 0.5rem; border-radius: 6px; color: var(--radar-mint);">
+                Estimation : 250 € par passager (Art. 7 § 1a)
+              </div>
+            </div>
+
+            <div style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1.5rem; font-size: 0.85rem;">
+              <div style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--alert-amber); margin-bottom: 0.5rem;">[Maquette] Courrier prêt à l'envoi</div>
+              <p style="color: rgba(255,255,255,0.7); font-style: italic;">
+                « À l'attention du Service Réclamations de la compagnie aérienne... Je sollicite l'indemnité forfaitaire de 250 € sur le fondement du règlement (CE) n° 261/2004... »
+              </p>
+              <div style="margin-top: 1rem; font-size: 0.75rem; color: rgba(255,255,255,0.5);">
+                Rien n'est envoyé sans votre relecture et votre envoi manuel.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S5: Commitments -->
+    <section id="engagements">
+      <div class="container">
+        <div style="max-width: 720px; margin-bottom: 3rem;">
+          <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--stone); margin-bottom: 0.5rem;">04 • Déontologie</div>
+          <h2 class="font-display" style="font-size: clamp(2rem, 4vw, 3.25rem); font-style: italic; line-height: 1.1;">
+            Ce que nous faisons, et ce que nous refusons de faire.
+          </h2>
+        </div>
+
+        <div class="commitments-grid">
+          <!-- Ce que nous faisons -->
+          <div class="commit-card" style="background: rgba(231, 231, 226, 0.6); border: 1px solid rgba(23, 25, 29, 0.1);">
+            <h3 class="font-display" style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--ink);">
+              Ce que nous faisons
+            </h3>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem; font-size: 0.9rem;">
+              <li><strong>✓ Analyse locale sur votre machine :</strong> Aucun transfert de vos confirmations de vol.</li>
+              <li><strong>✓ Estimation transparente :</strong> Citation systématique des articles de loi applicables.</li>
+              <li><strong>✓ Préparation documentaire :</strong> Courriers complets prêts à être relus et envoyés par vos soins.</li>
+              <li><strong>✓ Suivi des délais :</strong> Alertes sur les prescriptions légales (ex. 5 ans en France).</li>
+            </ul>
+          </div>
+
+          <!-- Ce que nous ne faisons pas -->
+          <div class="commit-card" style="background: var(--ink); color: var(--light-text); border: 1px solid rgba(255, 255, 255, 0.1);">
+            <h3 class="font-display" style="font-size: 1.75rem; margin-bottom: 1.5rem; color: var(--light-text);">
+              Ce que nous ne faisons pas
+            </h3>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 1rem; font-size: 0.9rem; color: rgba(255,255,255,0.85);">
+              <li><strong>✗ Aucun rachat de créance :</strong> Nous ne préemptons pas vos indemnités.</li>
+              <li><strong>✗ Aucune commission sur vos indemnités :</strong> Vous conservez l'intégralité des montants versés.</li>
+              <li><strong>✗ Rien n'est envoyé sans votre accord :</strong> Vous restez l'unique expéditeur.</li>
+              <li><strong>✗ Aucun conseil juridique :</strong> L'outil ne remplace pas un avocat ou une consultation juridique.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Mandatory footer line -->
+        <div style="margin-top: 2rem; padding: 1rem 1.25rem; background: rgba(231, 166, 58, 0.15); border: 1px solid var(--alert-amber); border-radius: 8px; font-size: 0.85rem; color: #9A5B00;">
+          <strong>Information légale :</strong> Rights Radar ne remplace pas un avocat et aucune indemnisation n’est assurée.
+        </div>
+      </div>
+    </section>
+
+    <!-- S6: Comparison -->
+    <section id="comparaison" style="background: rgba(231, 231, 226, 0.4); border-top: 1px solid rgba(23, 25, 29, 0.1); border-bottom: 1px solid rgba(23, 25, 29, 0.1);">
+      <div class="container">
+        <div style="max-width: 720px; margin-bottom: 3rem;">
+          <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--stone); margin-bottom: 0.5rem;">05 • Comparaison</div>
+          <h2 class="font-display" style="font-size: clamp(2rem, 4vw, 3.25rem); font-style: italic; line-height: 1.1;">
+            D'autres services existent, et certains ont davantage d'expérience.
+          </h2>
+          <p style="color: rgba(23, 25, 29, 0.7); margin-top: 0.5rem;">
+            Des agences spécialisées proposent une prise en charge complète contre commission. Voici une comparaison sur un cas type.
+          </p>
+        </div>
+
+        <div style="background: var(--canvas); border: 1px solid rgba(23, 25, 29, 0.1); border-radius: 16px; padding: 2.5rem; max-width: 840px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(23, 25, 29, 0.1); padding-bottom: 1rem; margin-bottom: 2rem;">
+            <div class="font-display" style="font-size: 1.5rem;">Cas illustratif d'une indemnité de 400 €</div>
+            <span class="badge-maquette" style="background: rgba(23, 25, 29, 0.05); color: var(--body-text); border-color: rgba(23, 25, 29, 0.15);">
+              Exemple de calcul, pas un résultat.
+            </span>
+          </div>
+
+          <!-- Example A -->
+          <div style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+              <span><strong>Exemple A :</strong> Commission de 35 % = 140 € <span class="font-code" style="color: var(--stone);">[partie intéressée : AirHelp]</span></span>
+              <span class="font-code">Net passager : 260 €</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-amber" id="bar-a" style="width: 35%;">140 € (35%)</div>
+              <div class="bar-dark" id="bar-a-rest" style="width: 65%;">260 € reversés</div>
+            </div>
+          </div>
+
+          <!-- Example B -->
+          <div>
+            <div style="display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 0.25rem;">
+              <span><strong>Exemple B :</strong> Prix fixe hypothétique de 9 à 14 € <span class="font-code" style="color: var(--stone);">[hypothèse à tester]</span></span>
+              <span class="font-code">Net passager : ~388 €</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-mint" id="bar-b" style="width: 3.5%; min-width: 40px;">~12 €</div>
+              <div class="bar-dark" id="bar-b-rest" style="width: 96.5%;">Montant conservé par le passager : ~388 €</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; font-size: 0.75rem; color: rgba(23, 25, 29, 0.6); border-top: 1px solid rgba(23, 25, 29, 0.1); padding-top: 1rem;">
+            Exemple arithmétique. Les barèmes d'agences tierces peuvent varier de 35 % à 50 % en cas de procédure judiciaire.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- S7: Needs -->
+    <section id="besoins">
+      <div class="container">
+        <div style="max-width: 720px; margin-bottom: 3rem;">
+          <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--stone); margin-bottom: 0.5rem;">06 • Attentes</div>
+          <h2 class="font-display" style="font-size: clamp(2rem, 4vw, 3.25rem); font-style: italic; line-height: 1.1;">
+            Prix clairs, rapidité, contrôle et confidentialité.
+          </h2>
+        </div>
+
+        <div class="needs-grid">
+          <div class="need-tile">
+            <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Prix clairs</h3>
+            <p style="font-size: 0.85rem; color: rgba(23, 25, 29, 0.75);">
+              Éviter les commissions imprévues prélevées sur l'indemnisation finale obtenue du transporteur.
+            </p>
+          </div>
+
+          <div class="need-tile">
+            <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Rapidité</h3>
+            <p style="font-size: 0.85rem; color: rgba(23, 25, 29, 0.75);">
+              Obtenir une estimation en quelques instants après le vol sans attendre des semaines d'audit initial.
+            </p>
+          </div>
+
+          <div class="need-tile">
+            <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Contrôle</h3>
+            <p style="font-size: 0.85rem; color: rgba(23, 25, 29, 0.75);">
+              Conserver la maîtrise des démarches et de l'envoi effectif auprès de la compagnie aérienne.
+            </p>
+          </div>
+
+          <div class="need-tile">
+            <h3 class="font-display" style="font-size: 1.5rem; margin-bottom: 0.5rem;">Confidentialité</h3>
+            <p style="font-size: 0.85rem; color: rgba(23, 25, 29, 0.75);">
+              Ne pas transférer l'accès à sa boîte email ni confier des pièces d'identité à un serveur tiers.
+            </p>
+          </div>
+        </div>
+
+        <div style="margin-top: 2rem; font-size: 0.8rem; color: rgba(23, 25, 29, 0.6); background: rgba(231, 231, 226, 0.5); padding: 0.75rem 1rem; border-radius: 8px;">
+          <strong>Avertissement :</strong> Ces observations constituent des pistes de recherche, pas une preuve représentative.
+        </div>
+      </div>
+    </section>
+
+    <!-- S8: Request and waitlist -->
+    <section id="inscription" style="background: var(--ink); color: var(--light-text);">
+      <div class="container">
+        <div style="max-width: 720px; margin-bottom: 3rem;">
+          <div class="font-code" style="font-size: 0.75rem; text-transform: uppercase; color: var(--radar-mint); margin-bottom: 0.5rem;">07 • Participation</div>
+          <h2 class="font-display" style="font-size: clamp(2rem, 4vw, 3.25rem); font-style: italic; line-height: 1.1;">
+            Pour faire progresser Rights Radar, nous recherchons des participants.
+          </h2>
+          <p style="color: rgba(255,255,255,0.7); margin-top: 1rem;">
+            Nous sollicitons des retours d'expérience usagers, des relectures juridiques et des avis sur la tarification.
+          </p>
+        </div>
+
+        <div class="waitlist-card">
+          <form id="waitlist-form" novalidate>
+            <div style="margin-bottom: 1.5rem;">
+              <label for="wl-email" style="display: block; font-size: 0.85rem; margin-bottom: 0.25rem;">
+                Votre adresse email <span style="color: var(--radar-mint);">*</span>
+              </label>
+              <input type="email" id="wl-email" required class="form-input" placeholder="nom@exemple.fr" />
+            </div>
+
+            <fieldset style="border: none; margin-bottom: 1.5rem;">
+              <legend style="font-size: 0.85rem; margin-bottom: 0.5rem;">
+                Comment envisagez-vous d'utiliser l'outil ? <span style="color: var(--radar-mint);">*</span>
+              </legend>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <span>Une fois</span>
+                  <input type="radio" name="usage-freq" value="Une fois" required />
+                </label>
+                <label class="radio-label">
+                  <span>Plusieurs fois par an</span>
+                  <input type="radio" name="usage-freq" value="Plusieurs fois par an" />
+                </label>
+                <label class="radio-label">
+                  <span>Je ne sais pas</span>
+                  <input type="radio" name="usage-freq" value="Je ne sais pas" />
+                </label>
+              </div>
+            </fieldset>
+
+            <div id="form-error" style="display: none; background: rgba(220, 38, 38, 0.2); border: 1px solid #ef4444; color: #fca5a5; padding: 0.75rem; border-radius: 6px; font-size: 0.8rem; margin-bottom: 1rem;" role="alert"></div>
+
+            <div style="font-size: 0.75rem; color: rgba(255,255,255,0.6); margin-bottom: 1.5rem; line-height: 1.4;">
+              En envoyant votre email, vous acceptez que nous le conservions pour vous informer du projet. Vous pouvez demander sa suppression à tout moment.
+            </div>
+
+            <button type="submit" id="btn-submit-wl" class="btn-primary" style="width: 100%; justify-content: center; background: var(--radar-mint); color: var(--ink); font-weight: 600;">
+              Envoyer
+            </button>
+          </form>
+
+          <div id="form-success" style="display: none; text-align: center; padding: 2rem 0;" role="status">
+            <h3 class="font-display" style="font-size: 1.75rem; color: var(--radar-mint); margin-bottom: 0.5rem;">
+              Merci. Nous vous écrirons à l'ouverture.
+            </h3>
+            <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">
+              Votre inscription pour la phase de test de Rights Radar a bien été notée.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- S9: Footer -->
+  <footer id="footer" style="background: #0B0F17; color: var(--light-text); padding: 4rem 0 2rem; border-top: 1px solid rgba(255,255,255,0.1);">
+    <div class="container">
+      <div style="margin-bottom: 2rem;">
+        <div class="brand" style="margin-bottom: 0.5rem;">
+          <span class="brand-dot"></span>
+          <span>Rights Radar</span>
+        </div>
+        <p style="font-size: 0.8rem; color: rgba(255,255,255,0.6); max-width: 500px;">
+          Projet d’outil local-first d’analyse documentaire et d’estimation des droits des passagers aériens.
+        </p>
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem; margin-bottom: 1.5rem;">
+        <div class="font-code" style="font-size: 0.75rem; color: rgba(255,255,255,0.4); text-transform: uppercase; margin-bottom: 0.5rem;">
+          Sources documentaires citées (sans logo)
+        </div>
+        <div class="font-code" style="font-size: 0.75rem; color: rgba(255,255,255,0.6); line-height: 1.8;">
+          EUR-Lex, Commission européenne, Parlement européen, Conseil de l'Union européenne, AirHelp, Skycop, Transport Focus, CURIA, Unsplash, Lucide, Phosphor, Google Fonts.
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.5);">
+        <div>Ce site ne constitue pas un conseil juridique.</div>
+        <div style="display: flex; gap: 1.5rem;">
+          <a href="#inscription" style="text-decoration: underline;">Note de confidentialité (ébauche)</a>
+          <a href="#" style="text-decoration: underline;">Retour en haut</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Review mode detection via query parameter ?review=1
+    const urlParams = new URLSearchParams(window.location.search);
+    const isReview = urlParams.get('review') === '1';
+    if (isReview) {
+      document.body.setAttribute('data-review-mode', 'true');
+      const badge = document.getElementById('review-header-badge');
+      if (badge) badge.style.display = 'inline-block';
+    }
+
+    // S0 Opening enter button
+    const openingScreen = document.getElementById('s0-opening');
+    const enterBtn = document.getElementById('btn-enter');
+    if (enterBtn && openingScreen) {
+      enterBtn.addEventListener('click', () => {
+        openingScreen.style.display = 'none';
+      });
+      // Skip automatically for autostart query param
+      if (urlParams.get('autostart') === '1') {
+        openingScreen.style.display = 'none';
+      }
+    }
+
+    // Menu Overlay handling
+    const menuOverlay = document.getElementById('menu-overlay');
+    const openMenuBtn = document.getElementById('open-menu-btn');
+    const closeMenuBtn = document.getElementById('close-menu-btn');
+    const menuLinks = document.querySelectorAll('.menu-link');
+
+    function openMenu() {
+      menuOverlay.classList.add('is-open');
+      closeMenuBtn.focus();
+    }
+    function closeMenu() {
+      menuOverlay.classList.remove('is-open');
+      openMenuBtn.focus();
+    }
+    openMenuBtn.addEventListener('click', openMenu);
+    closeMenuBtn.addEventListener('click', closeMenu);
+    menuLinks.forEach(link => link.addEventListener('click', closeMenu));
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menuOverlay.classList.contains('is-open')) {
+        closeMenu();
+      }
+    });
+
+    // S2 Stat animation (0 -> 45)
+    let animatedStat = false;
+    const statEl = document.getElementById('stat-counter');
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !animatedStat) {
+          animatedStat = true;
+          let current = 0;
+          const target = 45;
+          const interval = setInterval(() => {
+            current += 1;
+            statEl.textContent = current + ' %';
+            if (current >= target) clearInterval(interval);
+          }, 25);
+        }
+      });
+    }, { threshold: 0.3 });
+    if (statEl) statObserver.observe(statEl);
+
+    // Standalone Radar Canvas Module
+    function createRadar(canvas) {
+      if (!canvas) return { start: () => {}, stop: () => {} };
+      const ctx = canvas.getContext('2d');
+      let reqId = null;
+      let angle = 0;
+      let active = true;
+
+      function render() {
+        if (!active) return;
+        const w = canvas.width;
+        const h = canvas.height;
+        const cx = w / 2;
+        const cy = h / 2;
+        const r = Math.min(w, h) * 0.44;
+
+        ctx.clearRect(0, 0, w, h);
+
+        // Background
+        const grad = ctx.createRadialGradient(cx, cy, 10, cx, cy, r);
+        grad.addColorStop(0, '#101722');
+        grad.addColorStop(1, '#080C14');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Concentric circles
+        [0.35, 0.65, 0.95].forEach(ratio => {
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(cx, cy, r * ratio, 0, Math.PI * 2);
+          ctx.stroke();
+        });
+
+        // Crosshairs
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.beginPath();
+        ctx.moveTo(cx - r, cy); ctx.lineTo(cx + r, cy);
+        ctx.moveTo(cx, cy - r); ctx.lineTo(cx, cy + r);
+        ctx.stroke();
+
+        // Sweep cone
+        angle += 0.02;
+        if (angle > Math.PI * 2) angle -= Math.PI * 2;
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.arc(cx, cy, r, angle - 0.5, angle);
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(67, 221, 176, 0.15)';
+        ctx.fill();
+
+        ctx.strokeStyle = '#43DDB0';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r);
+        ctx.stroke();
+        ctx.restore();
+
+        // Two blips
+        const blips = [
+          { angle: 0.8, dist: 0.45, label: 'AF 1234' },
+          { angle: 3.2, dist: 0.75, label: 'DL 0890' }
+        ];
+        blips.forEach(b => {
+          const bx = cx + Math.cos(b.angle) * (r * b.dist);
+          const by = cy + Math.sin(b.angle) * (r * b.dist);
+          ctx.fillStyle = '#43DDB0';
+          ctx.beginPath();
+          ctx.arc(bx, by, 3, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.font = '10px "JetBrains Mono", monospace';
+          ctx.fillStyle = 'rgba(246, 245, 241, 0.8)';
+          ctx.fillText(b.label, bx + 6, by - 2);
+        });
+
+        reqId = requestAnimationFrame(render);
+      }
+
+      return {
+        start: () => {
+          active = true;
+          render();
+        },
+        stop: () => {
+          active = false;
+          if (reqId) cancelAnimationFrame(reqId);
+        }
+      };
+    }
+
+    const radarCanvasEl = document.getElementById('radar-canvas');
+    if (radarCanvasEl) {
+      const radar = createRadar(radarCanvasEl);
+      radar.start();
+      const radarObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) radar.start();
+          else radar.stop();
+        });
+      }, { threshold: 0.1 });
+      radarObserver.observe(radarCanvasEl);
+    }
+
+    // Waitlist submission handler
+    // Defined as null by default as required by specification
+    const WAITLIST_ENDPOINT = null;
+
+    async function submitWaitlist(payload) {
+      if (!WAITLIST_ENDPOINT) {
+        // Staging/demo mode: log entry to console, no remote transmission
+        console.info('[Rights Radar Staging Waitlist Payload]:', payload);
+        return { success: true, mode: 'demo' };
+      }
+      const response = await fetch(WAITLIST_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if (!response.ok) throw new Error('Erreur réseau lors de la soumission');
+      return await response.json();
+    }
+
+    const form = document.getElementById('waitlist-form');
+    const formSuccess = document.getElementById('form-success');
+    const formError = document.getElementById('form-error');
+    const submitBtn = document.getElementById('btn-submit-wl');
+
+    if (form) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        formError.style.display = 'none';
+
+        const email = document.getElementById('wl-email').value.trim();
+        const selectedRadio = document.querySelector('input[name="usage-freq"]:checked');
+
+        if (!email || !email.includes('@')) {
+          formError.textContent = 'Veuillez saisir une adresse email valide.';
+          formError.style.display = 'block';
+          return;
+        }
+        if (!selectedRadio) {
+          formError.textContent = 'Veuillez sélectionner votre fréquence d’usage envisagée.';
+          formError.style.display = 'block';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Enregistrement...';
+
+        try {
+          await submitWaitlist({
+            email: email,
+            usageFrequency: selectedRadio.value,
+            submittedAt: new Date().toISOString()
+          });
+          form.style.display = 'none';
+          formSuccess.style.display = 'block';
+        } catch (err) {
+          formError.textContent = 'Une erreur est survenue lors de l’envoi. Veuillez réessayer.';
+          formError.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Envoyer';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

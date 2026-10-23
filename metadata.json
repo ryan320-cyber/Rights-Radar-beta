@@ -1,0 +1,6 @@
+{
+  "name": "Rights Radar",
+  "description": "Le radar de vos droits en voyage. Inscription à la liste d'attente.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

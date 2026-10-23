@@ -1,0 +1,6 @@
+{
+  "summary":  "Plan d'implémentation pour l'intégration de Search Grounding (Google Search via gemini-3.8-flash) dans Rights Radar, couvrant la vérification en direct des perturbations de vol et la veille réglementaire européenne avec des badges de sources cliquables.",
+  "updatedAt":  "2026-10-23T10:07:55.025023865Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}
