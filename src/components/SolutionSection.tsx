@@ -165,27 +165,27 @@ export function SolutionSection({ onOpenSimulator }: SolutionSectionProps) {
         </div>
 
         {/* Interactive Mockups Screen Console */}
-        <div className="bg-[#0E1520] rounded-3xl p-6 sm:p-10 border border-white/10 shadow-2xl">
+        <div className="bg-[#0A0F1A] rounded-3xl p-6 sm:p-10 border border-white/10 shadow-2xl">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 border-b border-white/10 mb-8">
             <div>
               <span className="font-code text-xs text-[#43DDB0] uppercase tracking-wider block mb-1">
                 Visualisation de l’expérience
               </span>
-              <h3 className="font-display text-2xl sm:text-3xl text-[#F6F5F1]">
+              <h3 className="font-display text-2xl sm:text-3xl text-white">
                 Aperçu des interfaces prévues
               </h3>
             </div>
             <div className="flex items-center gap-3">
-              <span className="font-code text-xs px-3 py-1 rounded bg-[#E7A63A]/20 text-[#E7A63A] border border-[#E7A63A]/40 font-medium">
-                Maquette
+              <span className="font-code text-[11px] px-2.5 py-0.5 rounded bg-white/[0.04] text-white/50 border border-white/10">
+                Maquette interactive
               </span>
               <button
                 type="button"
                 onClick={onOpenSimulator}
                 data-cursor="action"
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#43DDB0] hover:bg-[#38C69D] text-[#080C14] text-xs font-code font-semibold transition shadow-md"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-neutral-200 text-black text-xs font-code font-semibold transition shadow-md active:scale-[0.98]"
               >
-                <Sparkles className="w-3.5 h-3.5" />
+                <Sparkles className="w-3.5 h-3.5 text-black" />
                 <span>Simuler un vol</span>
               </button>
             </div>

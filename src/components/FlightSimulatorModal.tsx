@@ -15,6 +15,7 @@ interface FlightSimulatorModalProps {
   isOpen: boolean;
   onClose: () => void;
   user: User | null;
+  initialPreset?: 'short' | 'medium' | 'long' | null;
 }
 
 interface SavedInspection {
@@ -27,7 +28,7 @@ interface SavedInspection {
   notes?: string;
 }
 
-export function FlightSimulatorModal({ isOpen, onClose, user }: FlightSimulatorModalProps) {
+export function FlightSimulatorModal({ isOpen, onClose, user, initialPreset }: FlightSimulatorModalProps) {
   const [flightCode, setFlightCode] = useState('AF 1234');
   const [departure, setDeparture] = useState('Paris-CDG');
   const [arrival, setArrival] = useState('Nice-NCE');
@@ -223,6 +224,12 @@ export function FlightSimulatorModal({ isOpen, onClose, user }: FlightSimulatorM
       setAirlineName('Delta Air Lines');
     }
   };
+
+  useEffect(() => {
+    if (isOpen && initialPreset) {
+      loadPreset(initialPreset);
+    }
+  }, [isOpen, initialPreset]);
 
   if (!isOpen) return null;
 

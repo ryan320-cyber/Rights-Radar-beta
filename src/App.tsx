@@ -26,6 +26,7 @@ export default function App() {
   const [showIntro, setShowIntro] = useState(true);
   const [isReviewMode, setIsReviewMode] = useState(false);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
+  const [simulatorPreset, setSimulatorPreset] = useState<'short' | 'medium' | 'long' | null>(null);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
 
   useEffect(() => {
@@ -50,6 +51,11 @@ export default function App() {
     setIsReviewMode((prev) => !prev);
   };
 
+  const handleOpenSimulator = (preset?: 'short' | 'medium' | 'long') => {
+    setSimulatorPreset(preset || null);
+    setIsSimulatorOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-[#03070D] text-[#F4F4F6] font-body selection:bg-[#43DDB0]/30 selection:text-white flex flex-col">
       {/* Desktop Art-directed Custom Reticle Cursor */}
@@ -68,7 +74,7 @@ export default function App() {
       {/* Main Semantic Landmark */}
       <main id="main-content" className="flex-1">
         {/* S1: Hero Section */}
-        <HeroSection onOpenSimulator={() => setIsSimulatorOpen(true)} />
+        <HeroSection onOpenSimulator={handleOpenSimulator} />
 
         {/* S2: The Problem */}
         <ProblemSection />
@@ -77,7 +83,7 @@ export default function App() {
         <WhyNowSection isReviewMode={isReviewMode} />
 
         {/* S4: The Solution */}
-        <SolutionSection onOpenSimulator={() => setIsSimulatorOpen(true)} />
+        <SolutionSection onOpenSimulator={() => handleOpenSimulator()} />
 
         {/* S5: Commitments */}
         <CommitmentsSection />
@@ -100,6 +106,7 @@ export default function App() {
         isOpen={isSimulatorOpen}
         onClose={() => setIsSimulatorOpen(false)}
         user={user}
+        initialPreset={simulatorPreset}
       />
 
       <PrivacyModal

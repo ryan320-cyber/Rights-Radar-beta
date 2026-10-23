@@ -371,6 +371,14 @@ export function RadarCanvas({
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
+    if (isDraggingRef.current && isInteractive) {
+      const dx = e.clientX - dragStartRef.current.x;
+      const dy = e.clientY - dragStartRef.current.y;
+      // If it was a quick click rather than a drag, and a blip is hovered, select it
+      if (Math.hypot(dx, dy) < 8 && hoveredBlip) {
+        onBlipSelect?.(hoveredBlip);
+      }
+    }
     isDraggingRef.current = false;
     try {
       (e.target as HTMLElement).releasePointerCapture(e.pointerId);
@@ -426,7 +434,7 @@ export function RadarCanvas({
             top: `${tooltipPos.y - 12}px`,
             transform: 'translate(-50%, -100%)',
           }}
-          className="absolute z-30 pointer-events-none p-3 rounded-xl bg-[#080C14]/95 border border-[#43DDB0]/50 shadow-2xl backdrop-blur-md text-xs font-code text-[#F6F5F1] min-w-[200px]"
+          className="absolute z-30 pointer-events-none p-3.5 rounded-xl bg-[#080C14]/95 border border-[#43DDB0]/60 shadow-2xl backdrop-blur-md text-xs font-code text-[#F6F5F1] min-w-[210px]"
         >
           <div className="flex items-center justify-between pb-1.5 border-b border-white/10 mb-1.5">
             <span className="font-semibold text-[#43DDB0]">{hoveredBlip.code}</span>
@@ -434,11 +442,12 @@ export function RadarCanvas({
           </div>
           <div className="text-white/80 font-body text-[11px] mb-1">{hoveredBlip.route}</div>
           <div className="flex items-center justify-between text-[11px]">
-            <span className="text-[#E7A63A]">{hoveredBlip.delay}</span>
+            <span className="text-[#FFB340]">{hoveredBlip.delay}</span>
             <span className="font-bold text-[#43DDB0]">{hoveredBlip.amount}</span>
           </div>
-          <div className="text-[9px] text-white/40 mt-1 uppercase tracking-wider">
-            {hoveredBlip.label}
+          <div className="flex items-center justify-between text-[10px] text-[#43DDB0] mt-2 pt-1.5 border-t border-white/10 font-semibold tracking-wide">
+            <span>Cliquer pour simuler ce vol</span>
+            <span>→</span>
           </div>
         </div>
       )}

@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { RadarCanvas } from './RadarCanvas.tsx';
 
 interface HeroSectionProps {
-  onOpenSimulator: () => void;
+  onOpenSimulator: (preset?: 'short' | 'medium' | 'long') => void;
 }
 
 export function HeroSection({ onOpenSimulator }: HeroSectionProps) {
@@ -70,7 +70,7 @@ export function HeroSection({ onOpenSimulator }: HeroSectionProps) {
 
               <button
                 type="button"
-                onClick={onOpenSimulator}
+                onClick={() => onOpenSimulator()}
                 data-cursor="action"
                 className="group inline-flex items-center gap-2 px-6 py-3.5 rounded-full border border-white/20 hover:border-white/50 bg-white/[0.04] hover:bg-white/[0.08] text-white font-code text-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#FFB340]"
               >
@@ -104,7 +104,14 @@ export function HeroSection({ onOpenSimulator }: HeroSectionProps) {
               className="absolute -inset-6 bg-radial from-[#43DDB0]/15 via-transparent to-transparent rounded-full blur-3xl pointer-events-none"
             />
             <div className="w-full relative z-10">
-              <RadarCanvas />
+              <RadarCanvas
+                onBlipSelect={(blip) => {
+                  if (blip.id === 'af1234') onOpenSimulator('short');
+                  else if (blip.id === 'ib3401') onOpenSimulator('medium');
+                  else if (blip.id === 'dl890') onOpenSimulator('long');
+                  else onOpenSimulator();
+                }}
+              />
             </div>
           </div>
         </div>
