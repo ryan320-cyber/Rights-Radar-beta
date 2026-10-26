@@ -1,0 +1,67 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 256 },
+        "displayName": { "type": "string", "maxLength": 128 },
+        "photoURL": { "type": "string", "maxLength": 512 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["uid", "email"]
+    },
+    "WaitlistEntry": {
+      "title": "WaitlistEntry",
+      "description": "Waitlist signup submission with usage preference",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "maxLength": 256 },
+        "usageFrequency": {
+          "type": "string",
+          "enum": ["once", "several_times", "unsure", "Une fois", "Plusieurs fois par an", "Je ne sais pas"]
+        },
+        "createdAt": { "type": "string" },
+        "userId": { "type": "string", "maxLength": 128 },
+        "source": { "type": "string", "maxLength": 64 }
+      },
+      "required": ["email", "usageFrequency"]
+    },
+    "FlightInspection": {
+      "title": "FlightInspection",
+      "description": "Scanned or simulated flight disruption record with estimated compensation and claim draft",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "flightCode": { "type": "string", "maxLength": 32 },
+        "route": { "type": "string", "maxLength": 128 },
+        "departureDate": { "type": "string", "maxLength": 32 },
+        "disruptionType": { "type": "string", "maxLength": 64 },
+        "delayHours": { "type": "number" },
+        "estimatedAmount": { "type": "number" },
+        "deadlineDate": { "type": "string", "maxLength": 32 },
+        "notes": { "type": "string", "maxLength": 500 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "flightCode", "route"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Registered user profile documents"
+    },
+    "/waitlist_submissions/{submissionId}": {
+      "schema": { "$ref": "#/entities/WaitlistEntry" },
+      "description": "Public waitlist submissions"
+    },
+    "/inspections/{inspectionId}": {
+      "schema": { "$ref": "#/entities/FlightInspection" },
+      "description": "User saved flight inspections and claim tracker"
+    }
+  }
+}

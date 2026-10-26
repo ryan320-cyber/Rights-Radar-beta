@@ -1,0 +1,1675 @@
+# ULTRA MEGA MASTER PROMPT — RIGHTS RADAR
+## Full-Stack Repair, Legal Accuracy, Security Hardening, Gmail Reliability, and Production Readiness
+
+### 0. YOUR ROLE
+
+You are acting as a senior full-stack software engineer, software architect, application-security engineer, test engineer, UX engineer, and research assistant specializing in passenger-rights technology.
+
+You have access to the existing Rights Radar repository. Your job is to transform it into a dependable, testable, honest, privacy-conscious application without destroying the design or replacing the project with an unrelated implementation.
+
+**This is an execution task, not a code-review-only task.**
+
+You must inspect the real code, identify the root causes of the problems below, edit the appropriate files, implement the fixes, add meaningful tests, run the available validation commands, and produce a final evidence-based report.
+
+Do not stop after creating a plan. Continue through implementation and verification until all feasible fixes are completed.
+
+Do not ask me to make routine engineering decisions. Make reasonable, minimal, documented decisions and proceed. When a missing external credential, API permission, production database, or deployment setting prevents a particular test, complete everything possible locally and clearly report the remaining requirement.
+
+---
+
+# 1. PROJECT CONTEXT AND NON-NEGOTIABLE REQUIREMENTS
+
+The project is Rights Radar, a passenger-rights application built around a distinctive visual identity and the following capabilities:
+
+- A polished, cinematic, dark-and-green radar visual system.
+- A flight compensation simulator.
+- An estimated eligibility result under European Regulation (EC) No 261/2004.
+- A claim-letter generator.
+- Google Gmail authentication and flight-email scanning.
+- Creation of claim drafts in Gmail.
+- Saved flight inspections using Firebase.
+- A waitlist and user-research questionnaire.
+- An Express backend.
+- Gemini and Google Search grounding for flight-related information and regulatory updates.
+- PostgreSQL persistence through Drizzle ORM.
+- Firebase Authentication and Firestore security rules.
+
+The repository includes files such as:
+
+- `src/utils/rightsCalculator.ts`
+- `src/utils/rightsCalculator.test.ts`
+- `src/utils/waitlist.ts`
+- `src/utils/waitlist.test.ts`
+- `src/services/gmailService.ts`
+- `src/components/FlightSimulatorModal.tsx`
+- `src/components/GmailScannerModal.tsx`
+- `src/components/GmailFlightScannerModal.tsx`
+- `src/components/WaitlistSection.tsx`
+- `src/components/PrivacyModal.tsx`
+- `src/components/SecurityCenterModal.tsx`
+- `src/lib/firebase.ts`
+- `src/lib/firebase-admin.ts`
+- `src/middleware/auth.ts`
+- `src/db/index.ts`
+- `src/db/schema.ts`
+- `src/db/users.ts`
+- `server.ts`
+- `firestore.rules`
+- `security_spec.md`
+- `.env.example`
+- `package.json`
+
+These are initial inspection targets, not an exhaustive file list. Search the whole repository before making changes.
+
+## Preserve the existing product
+
+Do not redesign Rights Radar from scratch.
+
+Preserve its brand identity, layout, animations, typography, radar effects, existing responsive experience, and overall quality. Improve the interface only when necessary to make real workflows understandable, accessible, and trustworthy.
+
+Do not delete working features merely because repairing them is difficult. If a feature cannot responsibly operate without external configuration, implement a truthful disabled or unavailable state rather than pretending it works.
+
+Do not replace a sophisticated application with a generic dashboard.
+
+## Absolute engineering rules
+
+1. Never fabricate live flight information, citations, incidents, database writes, Gmail messages, legal conclusions, or successful operations.
+2. Never show a success notification unless the underlying operation has genuinely succeeded.
+3. Never present demonstration records as data discovered in a real user's account.
+4. Never treat an AI-generated opinion as authoritative proof of legal eligibility or extraordinary circumstances.
+5. Never expose API keys, access tokens, private database credentials, or user email contents in logs or source code.
+6. Never automatically send an email or submit a legal claim without an explicit user action and final confirmation.
+7. Never loosen security rules merely to make a failing request appear to work.
+8. Never make up a national limitation period or statutory deadline.
+9. Never claim a test, build, security check, or deployment passed unless it was actually executed and its result was observed.
+10. Never perform destructive production database operations or deploy the application as part of this task without explicit authorization.
+11. Keep changes focused, maintainable, documented, and compatible with the existing toolchain.
+12. Finish implementation and validation before reporting completion.
+
+---
+
+# 2. PHASE ZERO — ESTABLISH THE BASELINE
+
+Before editing anything, inspect the repository and establish how it actually works.
+
+### Inspect the architecture
+
+Read the package manifest, TypeScript configuration, lockfile, main application, server routes, database implementation, authentication middleware, Firebase initialization, security rules, simulator, Gmail integrations, privacy interfaces, and existing tests.
+
+Search for:
+
+- Mock data and demo fallbacks.
+- Hard-coded flight dates, compensation amounts, routes, and airline addresses.
+- Fixed deadline dates.
+- Hard-coded eligibility defaults.
+- Missing authentication or authorization.
+- Error handlers that return successful responses.
+- Code that ignores HTTP status codes.
+- Unbounded caches.
+- Missing request validation.
+- Duplicate implementations of the same Gmail workflow.
+- Unsupported or outdated legal statements.
+- Misleading claims about privacy, local processing, or security.
+- Unused assets, duplicate HTML exports, and large media files.
+- Hard-coded secrets or accidentally committed credentials.
+- Dead code and features whose user interface does not match their implementation.
+
+Inspect every actual occurrence before changing it. Do not assume a file still contains the same code as a previous review.
+
+### Establish reproducible checks
+
+Inspect the current scripts and lockfile before selecting a package manager or test runner.
+
+The project includes a `bun.lock`, has `tsx` among its development dependencies, and currently defines:
+
+- `dev`
+- `start`
+- `build`
+- `lint`
+
+It does not currently define a dedicated `test` script.
+
+The existing calculator tests can run under the installed Node TypeScript support, but a direct Node test run fails to resolve the extensionless `./waitlist` import in `src/utils/waitlist.test.ts`.
+
+Resolve the underlying compatibility problem. Use a consistent TypeScript-compatible test runner and add a reproducible test script. Do not change test expectations merely to make broken production behavior pass.
+
+Establish and record the baseline for:
+
+- TypeScript checking.
+- Production build.
+- Unit tests.
+- Available security and dependency checks.
+- Backend startup and health behavior.
+- Firebase rule validation, if its emulator and dependencies are available.
+
+Install dependencies only through the appropriate package-manager workflow and update the corresponding lockfile when needed.
+
+Do not create conflicting lockfiles or upgrade unrelated packages without a clear technical reason.
+
+Create a concise internal issue matrix containing the affected file, root cause, severity, intended solution, and verification method. Then proceed immediately with implementation.
+
+---
+
+# 3. PHASE ONE — REPAIR THE LEGAL COMPENSATION ENGINE
+
+## Primary target
+
+`src/utils/rightsCalculator.ts`
+
+Also inspect its callers, tests, interface types, presets, saved inspections, claim-letter generator, and legal explanations.
+
+The compensation calculation is a critical trust boundary. An incorrect result can mislead a passenger into making a claim based on assumptions that have not been verified.
+
+## 3.1 Replace the insufficient eligibility inputs
+
+The current calculator mainly accepts:
+
+- `distanceKm`
+- `isIntraEU`
+- `delayHours`
+- `disruptionType`
+- `jurisdictionCountry`
+- `flightDate`
+
+Its `isIntraEU` field defaults to `true`. This is unsafe because a distance and a delay do not establish that Regulation 261/2004 applies to the flight.
+
+Design a clearer and more explicit input model. Include the necessary fields for the legal assessment, where known:
+
+- Departure airport and country.
+- Arrival airport and country.
+- Operating air carrier.
+- Operating carrier's country or applicable licensing jurisdiction.
+- Actual applicable legal regime.
+- Flight date.
+- Flight distance.
+- Arrival delay at the final destination.
+- Type of disruption.
+- Whether the booking includes connecting flights on a single reservation.
+- Cancellation notification date or notice period.
+- Relevant re-routing details.
+- Whether boarding was involuntarily denied.
+- Whether the passenger presented themselves on time with a valid reservation and travel documents.
+- Any additional facts needed for a rule specific to the disruption type.
+
+Do not require irrelevant information or invent missing values. Use optional values and explicit unknown states wherever appropriate.
+
+Do not keep a permissive default that silently classifies an unknown route as covered by EU261.
+
+When the supplied information is insufficient, return an explicit insufficient-information result and ask the user to complete the relevant fields.
+
+## 3.2 Implement the geographic scope correctly
+
+Use the current official legal text and European Commission passenger-rights guidance to implement geographic scope.
+
+At minimum, distinguish:
+
+- Flights departing from an airport covered by EU passenger-rights rules, including cases where the operating carrier is not an EU carrier.
+- Flights arriving in the EU from outside the EU, where the applicable operating-carrier conditions must be satisfied.
+- Flights that fall outside the regulation's scope.
+- Other legal regimes, including UK passenger rights, which must not automatically be treated as EU261.
+- Exceptional territories, connecting-flight situations, and uncertain routes requiring additional verification.
+
+Do not infer scope solely from whether a flight is labelled intra-EU.
+
+Do not infer scope solely from the airline's marketing brand. Use the actual operating carrier where relevant.
+
+Do not automatically treat a non-EU-to-EU flight operated by a non-EU carrier as eligible under EU261.
+
+For example, the existing New York JFK to Paris CDG preset uses Delta Air Lines. The present code can award €600 because the flight is long-haul and the entered delay is over four hours, although the route and operating carrier do not satisfy the ordinary EU261 scope test. Correct this scenario.
+
+If a scope condition is uncertain, explain the uncertainty rather than manufacturing eligibility.
+
+## 3.3 Correct the compensation bands without oversimplifying the law
+
+Implement the current official compensation rules as a separately testable, pure calculation layer.
+
+For qualifying EU261 flights, the standard compensation amounts include:
+
+- €250 for flights of 1,500 km or less.
+- €400 for qualifying intra-EU flights over 1,500 km and other flights between 1,500 km and 3,500 km.
+- €600 for other qualifying flights over 3,500 km.
+
+For qualifying long-haul arrival delays, the current European Commission guidance recognizes a €300 amount for delays of at least three hours but less than four hours in the relevant circumstances, with €600 applying at four hours or more.
+
+**Do not blindly remove the €300 tier.** Instead, correct the route, carrier, jurisdiction, distance, and final-arrival-delay evaluation that determines whether it can apply.
+
+Apply the precise distance boundaries and legal conditions documented in the current official sources. Do not let a user-entered label determine the legal band.
+
+## 3.4 Handle each disruption type independently
+
+### Delays
+
+Use delay at the final destination, not simply the amount of time a user says the aircraft was late departing.
+
+For qualifying flights, assess the relevant arrival delay threshold and the applicable compensation band.
+
+A delay of three hours or more is not by itself proof that compensation is payable. The route must be covered and extraordinary circumstances may affect the result.
+
+### Cancellations
+
+Implement the cancellation-specific rules separately from delay rules.
+
+Account for the notification period and relevant re-routing conditions. Distinguish cases where the passenger may be entitled to compensation from cases where the carrier can establish a legal exception.
+
+Do not apply the three-hour delay rule as a universal cancellation rule.
+
+### Denied boarding
+
+Distinguish involuntary denied boarding from voluntary surrender of a reservation. Account for relevant passenger check-in, travel-document, and reasonable-ground conditions.
+
+Do not automatically declare every denied-boarding scenario eligible.
+
+### Connecting flights
+
+Where necessary, assess the final destination and single-booking conditions. Do not calculate compensation using only one leg when the applicable legal rule requires the complete journey to be considered.
+
+If a scenario is too complex for the supported rule model, return an explicit review-needed result.
+
+## 3.5 Model eligibility separately from amount
+
+Replace the current overly simple Boolean model with a clear result type, such as:
+
+- Potentially eligible.
+- Not eligible under the selected rule.
+- Insufficient information.
+- Requires additional verification.
+
+Include:
+
+- Estimated amount, where a defensible amount can be calculated.
+- Applied legal regime.
+- Main reason for the assessment.
+- Relevant assumptions.
+- Missing information.
+- Official sources.
+- A clear statement that the result is preliminary.
+
+Do not show an attractive compensation figure when scope is unknown and then hide the uncertainty in small print.
+
+Do not represent €0 as proof that the user has no other passenger rights. Compensation, refund, re-routing, and assistance can be different legal questions.
+
+## 3.6 Make the calculation deterministic
+
+The core calculator should be a pure function with no network access, DOM dependencies, database calls, hidden state, or AI decisions.
+
+Keep official rule data separate from interface components.
+
+Use TypeScript discriminated unions or equivalent types to make unsupported combinations difficult to express.
+
+Validate all numeric values for finiteness and sensible bounds. Reject negative distances, negative delays, invalid dates, unknown disruption values, and impossible combinations rather than producing a result.
+
+---
+
+# 4. PHASE TWO — BUILD A RELIABLE LEGAL-SOURCE SYSTEM
+
+The application must show why it reached a result.
+
+Create a maintainable legal-reference structure for the rules the application actually supports.
+
+For each rule, retain as appropriate:
+
+- Rule identifier.
+- Description.
+- Applicable jurisdiction.
+- Effective date, if known.
+- Date last reviewed.
+- Authoritative source URL.
+- Relevant article, paragraph, or guidance section.
+- Scope and limitations.
+- Review status.
+
+Do not put legal assertions in arbitrary UI components when they can be maintained centrally.
+
+Prefer authoritative sources in this order:
+
+1. Binding EU legislation on EUR-Lex.
+2. Applicable binding Court of Justice of the European Union judgments.
+3. Current official European Commission interpretative guidance.
+4. Relevant official national enforcement bodies and government guidance.
+5. Secondary sources only where necessary to supplement primary evidence.
+
+Do not treat proposed legislative amendments as law merely because they appear in a recent search result.
+
+Do not claim that an AI search result proves a particular airline caused a delay or that an extraordinary circumstance has legally been established.
+
+When the evidence is inconclusive, preserve the uncertainty.
+
+### National claim deadlines
+
+Audit the existing `prescriptionMap` in `rightsCalculator.ts`.
+
+It currently hard-codes periods for several countries and defaults to five years when a country is unknown. That can make the application appear more certain than the evidence supports.
+
+Research each jurisdiction before retaining or revising its legal limitation-period entry.
+
+For each supported period, document the relevant source, the legal basis, the jurisdiction, and the date of the review.
+
+Do not invent a default period for unsupported countries.
+
+Where a reliable period cannot be determined, show an explicit message that the deadline requires jurisdiction-specific verification.
+
+Distinguish a legal limitation period from an internal reminder date or a response deadline suggested in a claim letter.
+
+Do not promise that a reminder guarantees the passenger will preserve a right.
+
+### Required official references
+
+Research the current versions of these official sources before implementing or revising legal rules:
+
+- European Commission passenger rights:
+  https://europa.eu/youreurope/citizens/travel/passenger-rights/air/index_en.htm
+
+- Consolidated EU Regulation 261/2004:
+  https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32004R0261
+
+- European Commission interpretative guidelines:
+  https://eur-lex.europa.eu/legal-content/EN/TXT/PDF/?uri=CELEX:52024XC05687
+
+- Court of Justice case law:
+  https://curia.europa.eu/
+
+Check the current status of the legal framework as part of this task. Record any uncertainty instead of guessing.
+
+---
+
+# 5. PHASE THREE — REPAIR FLIGHT PRESETS, DATES, AND ROUTE CALCULATION
+
+## Target
+
+`src/components/FlightSimulatorModal.tsx`
+
+The current interface includes preset scenarios and a manually entered distance.
+
+Fix any mismatch between the displayed scenario, its route, the distance, the calculator inputs, and the resulting amount.
+
+### Existing scenario issues
+
+The medium preset uses:
+
+- Paris-Orly to Madrid.
+- A distance of 1,050 km.
+- A label describing a medium intra-EU flight worth approximately €400.
+
+Under the standard distance bands, a qualifying flight of 1,050 km ordinarily falls into the €250 band, not the €400 band.
+
+Make the preset internally consistent. Either correct its label and category or replace it with a verified example that genuinely falls within the intended band.
+
+Also correct the New York-to-Paris Delta scenario so it does not demonstrate an automatically eligible €600 claim without satisfying the applicable scope rules.
+
+### Flight distance
+
+Determine a reliable design for route distance.
+
+Where airport codes or a maintained airport dataset are available, calculate great-circle distance from verified airport coordinates or use a reliable route data source. Explain that great-circle distance is not identical to the actual aircraft track, while remaining suitable for the appropriate legal distance calculation when applicable.
+
+If the user manually enters a distance, label it as user-provided and validate it.
+
+Never allow a route label and an unrelated distance value to silently coexist.
+
+### Demo values
+
+Review the prefilled values such as:
+
+- `AF 1234`.
+- `PNR-7890`.
+- `2026-09-15`.
+- `2031-09-15`.
+- `Air France`.
+
+Avoid presenting hard-coded demo values as real user information.
+
+Use clearly labelled scenarios or blank fields with examples. Preset examples may remain for demonstration purposes, but must be visibly identified as examples.
+
+### Saved deadlines
+
+Remove the hard-coded deadline in `handleSaveToFirestore`.
+
+Do not calculate an apparently authoritative expiry date by simply adding a fixed number of years to the flight date.
+
+A saved inspection should persist the actual input facts, the calculation result, the legal-rule version, and verified deadline metadata when available.
+
+If the legal deadline is unknown, save an unknown or pending-verification state. Do not invent a date.
+
+Ensure saved records remain readable, update correctly, and can be deleted by their owner.
+
+---
+
+# 6. PHASE FOUR — REBUILD CLAIM-LETTER GENERATION FOR ACCURACY
+
+## Target
+
+`src/utils/rightsCalculator.ts`, the Gmail components, and their callers.
+
+The current claim-letter generator always describes a flight delayed at arrival, even when the selected disruption may be a cancellation or denied boarding.
+
+It also uses strong legal assertions that may not be supported by the supplied inputs.
+
+Implement disruption-specific claim templates.
+
+### Required behaviors
+
+For a delay:
+
+- Refer to actual arrival delay at the final destination.
+- Include flight identifiers, travel date, route, and relevant reservation information.
+- Explain the preliminary legal basis and estimated amount only where appropriate.
+- Avoid asserting that liability has been conclusively established.
+
+For a cancellation:
+
+- Use cancellation-specific wording.
+- Include the relevant notification information and alternative-flight information when available.
+- Avoid reusing delay wording.
+
+For denied boarding:
+
+- Include relevant boarding facts and the nature of the denial.
+- Avoid assuming involuntary denied boarding when that has not been established.
+
+For uncertain cases:
+
+- Generate a neutral request for explanation or review instead of an unsupported demand for a fixed amount.
+
+### Legal assertions and deadlines
+
+Review wording such as:
+
+- “the airline is legally required to pay within 15 days.”
+- “the amount is definitely payable.”
+- “all delayed passengers receive compensation.”
+- Any fixed payment deadline presented as a statutory requirement without a verified legal source.
+
+The user's requested response period may be phrased as a request, but must not be incorrectly represented as a universal statutory deadline.
+
+Ensure that amounts, dates, route, carrier, and legal basis match the actual inputs. Escape or sanitize user-supplied text appropriately when rendering generated content.
+
+Do not insert invented passenger data or an assumed bank account.
+
+The generated letter must remain editable before the user sends it.
+
+Add tests for each supported letter type and for insufficient-information scenarios.
+
+---
+
+# 7. PHASE FIVE — REPAIR LIVE FLIGHT VERIFICATION
+
+## Target
+
+`server.ts`, `src/components/FlightSimulatorModal.tsx`, `src/components/SearchGroundingBadges.tsx`, and any related verification components.
+
+The current `/api/verify-flight` endpoint sends the flight code, date, origin, and destination to Gemini with Google Search grounding.
+
+However, its fallback currently claims that no major weather or air-traffic-control incident has been found and that compensation is potentially due, despite having no successful live verification.
+
+This behavior must be removed.
+
+## 7.1 Design explicit result states
+
+Model verification status separately from legal eligibility.
+
+Provide states that clearly distinguish:
+
+- Verified source-backed information.
+- Partial information.
+- No relevant evidence found in the searches actually performed.
+- Live verification unavailable.
+- Search provider error.
+- Invalid or incomplete request.
+
+Do not represent “no evidence found” as “the incident did not happen.”
+
+Do not represent “search unavailable” as “no extraordinary circumstances occurred.”
+
+Do not infer a legal entitlement purely from a weather report or an incident headline.
+
+## 7.2 Correct the fallback behavior
+
+When Gemini is unavailable, a quota is exhausted, grounding metadata is missing, or an external request fails:
+
+- Return a truthful result.
+- Explicitly mark live verification as unavailable or incomplete.
+- Do not claim that a real incident was searched successfully.
+- Do not fabricate negative findings.
+- Do not claim that the flight is compensable.
+- Return only valid sources actually retrieved, alongside clearly separated general official legal references where useful.
+- Allow the user to try again.
+
+Static legal reference links can remain accessible, but must not be presented as evidence that a current operational incident was verified.
+
+## 7.3 Correct extraordinary-circumstance classification
+
+The current implementation searches generated prose for substrings such as:
+
+- `circonstance extraordinaire`
+- `météo extrême`
+- `grève des contrôleurs`
+
+This is insufficient for legal classification. The same phrase can occur in a sentence that denies the existence of such an event.
+
+Use explicit structured results with validated values, when the installed model/API supports them. Keep the original grounded explanation and citations alongside the classification.
+
+If the model output is malformed or contradictory, return an unknown or inconclusive state.
+
+Even a source-backed event must not automatically be treated as a legally proven extraordinary circumstance. Relevant legal evaluation depends on the facts and the applicable law.
+
+## 7.4 Extract and display grounding sources correctly
+
+Inspect the actual response structure returned by the installed `@google/genai` SDK version.
+
+Read the grounding metadata and citations supported by the response format.
+
+Validate URLs before rendering them as links. Avoid executable or unsafe link protocols.
+
+Do not substitute generic source links for missing live citations while labelling them as retrieved results.
+
+Add fixtures for responses with:
+
+- Valid grounding metadata.
+- Missing grounding metadata.
+- Multiple duplicate source URLs.
+- Empty model output.
+- Malformed structured output.
+- Failed API requests.
+- Quota errors.
+- Contradictory generated text.
+
+## 7.5 Cache safely
+
+Review `flightCache`, `cachedRegulatoryPulse`, and `quotaCooldownUntil`.
+
+The current flight cache has no TTL or size limit. The regulatory pulse can remain cached indefinitely. Failed searches may also become cached fallback responses.
+
+Implement:
+
+- A bounded cache.
+- Explicit expiry.
+- Clear cache-key normalization.
+- A TTL appropriate to the data being cached.
+- Different treatment for successful source-backed results and failed requests.
+- A checked-at timestamp.
+- A clear stale-data indicator.
+- Graceful handling of provider quotas.
+
+Do not cache a fake result as verified data.
+
+Do not return a stale regulatory summary as a current update.
+
+For regulatory information, distinguish the date of the underlying source, the last successful check, and the fallback status.
+
+---
+
+# 8. PHASE SIX — FIX GMAIL SCANNING AND REMOVE FABRICATED FLIGHT RESULTS
+
+## Targets
+
+- `src/services/gmailService.ts`
+- `src/components/GmailScannerModal.tsx`
+- `src/components/GmailFlightScannerModal.tsx`
+- All components that consume the scanned results.
+
+Gmail integration is an important trust boundary because it interacts with real personal data.
+
+## 8.1 Remove demo fallbacks from actual scanning
+
+The existing Gmail service returns hard-coded flight examples when:
+
+- Gmail finds no messages.
+- An API request fails.
+- Messages are returned but cannot be parsed.
+
+This is unacceptable in a real user's mailbox.
+
+Delete the automatic `getDemoFlightDetection()` fallback from the real scanning workflow.
+
+When a user has no matching messages, return an empty result array.
+
+When Gmail authorization fails or a request errors, show a truthful error and offer a retry or reconnection.
+
+When a message cannot be parsed, report that it could not be reliably interpreted rather than inventing a flight.
+
+If the application retains demonstration data, isolate it behind a deliberate demo mode that the user activates. Every demo record must be visibly marked as simulated.
+
+Demo mode must never be activated automatically after a failed live request.
+
+## 8.2 Correct flight extraction
+
+The current parser uses keyword matching and regular expressions to infer flight codes, routes, delay types, and compensation.
+
+It can assign fabricated defaults such as `AF 1234`, a generic Paris-to-Europe route, and fixed delay values.
+
+Replace this approach with conservative extraction.
+
+Extract only facts that are actually present in the email data or a verified external source. Do not invent missing values.
+
+For each detected item, track:
+
+- Gmail message identifier.
+- Subject and sender metadata where appropriate.
+- Message date.
+- Extracted flight code.
+- Airline or operating carrier when established.
+- Departure and destination when established.
+- Flight date.
+- Delay or cancellation facts explicitly supported by the message.
+- Extraction confidence or verification status.
+- Provenance of each significant fact.
+
+When a value cannot be established, use `null`, `unknown`, or an equivalent explicit state.
+
+A keyword indicating “delay” does not prove the delay was at least three hours at the final destination.
+
+A cancellation email does not, by itself, prove an amount of compensation is due.
+
+An email is evidence of what the email says, not conclusive proof of all legal facts.
+
+Use the simulator's legal engine to assess only validated inputs, and preserve uncertainty in the user interface.
+
+## 8.3 Consolidate duplicate Gmail implementations
+
+Inspect `GmailScannerModal.tsx` and `GmailFlightScannerModal.tsx`.
+
+They implement overlapping scanning flows with different parsing and error-handling behavior.
+
+Determine which components are used and which functionality is genuinely required.
+
+Consolidate shared authentication, scanning, parsing, and claim-draft behavior into a clear service or shared components where appropriate. Avoid maintaining two inconsistent parsers.
+
+Do not remove a working user-facing capability without checking all imports and interactions.
+
+## 8.4 OAuth permissions must follow least privilege
+
+The current `GMAIL_SCOPES` requests overlapping scopes, including:
+
+- `https://mail.google.com/`
+- `https://www.googleapis.com/auth/gmail.readonly`
+- `https://www.googleapis.com/auth/gmail.compose`
+- `https://www.googleapis.com/auth/gmail.modify`
+
+This is excessive for a feature that primarily searches messages and creates claim drafts.
+
+Use the smallest set of Gmail permissions necessary for the implemented features.
+
+In particular:
+
+- Do not request `mail.google.com` merely to search emails or create drafts. It provides much broader access, including permanent deletion capabilities.
+- Do not request `gmail.modify` if the application does not modify Gmail messages or labels.
+- Use read-only access for the actual scanning workflow.
+- Request composition capability only where needed for creating drafts.
+- Avoid requesting direct-send permission unless a real, justified send feature is retained.
+- Keep authorization and consent understandable to users.
+- Clearly document Google verification and access requirements.
+
+Google identifies `gmail.readonly` as a restricted scope and documents additional verification requirements for applications using restricted Gmail data. If Gmail data is stored on or transmitted through servers, additional security assessment requirements can apply.
+
+Use the official documentation to verify the implementation:
+
+https://developers.google.com/workspace/gmail/api/auth/scopes
+
+https://developers.google.com/workspace/gmail/api/reference/rest/v1/users.messages/list
+
+Important: the `q` search parameter is not supported when calling Gmail message listing with the `gmail.metadata` scope. Do not replace `gmail.readonly` with `gmail.metadata` without addressing that constraint.
+
+Do not claim the application is ready for public Google OAuth verification simply because the local implementation compiles. Identify any required Google Cloud configuration or verification separately.
+
+## 8.5 Token and account lifecycle
+
+The access token is currently held in module-level memory, which is preferable to writing it into persistent browser storage.
+
+Preserve the no-persistent-token principle, while reviewing the complete authentication lifecycle.
+
+Handle:
+
+- Expired access tokens.
+- Reauthorization.
+- Missing scopes.
+- Account disconnection.
+- Unmounting of components.
+- Concurrent scanning.
+- Network failure.
+- Repeated sign-in attempts.
+- Stale cached user state.
+
+After disconnection, clear the retained Gmail access token and transient results.
+
+Never log an access token or email body.
+
+Do not claim the token is destroyed everywhere if it may still exist in an active network request or browser memory until that request completes.
+
+## 8.6 Make claim-draft creation correct
+
+The Gmail scanner currently uses a hard-coded recipient address associated with Air France, even when a different airline or flight is involved.
+
+Never send a claim to the wrong airline.
+
+Make the destination editable and require the user to verify it, or implement a maintained, source-backed directory of airline claim contacts. Never invent a recipient address.
+
+Before creating a draft:
+
+- Show the actual recipient.
+- Show the intended airline.
+- Show the flight being referenced.
+- Preview the subject and complete message.
+- Make clear that the legal assessment is preliminary.
+- Let the user edit the generated text.
+- Require a final explicit confirmation.
+
+The preferred default is to create a draft rather than send a legal claim automatically.
+
+Do not label a draft as sent or a sent email as a draft.
+
+Do not claim Gmail accepted the operation until the API returns the expected successful result.
+
+Remove unsupported claims such as a universal “legal 15-day deadline.”
+
+---
+
+# 9. PHASE SEVEN — COMPLETELY REPAIR WAITLIST PERSISTENCE
+
+## Targets
+
+- `src/utils/waitlist.ts`
+- `src/utils/waitlist.test.ts`
+- `src/components/WaitlistSection.tsx`
+- `server.ts`
+- `src/db/users.ts`
+- `src/db/schema.ts`
+- `firestore.rules`
+
+This is a high-priority issue.
+
+## 9.1 Fix the false-success defect
+
+`WAITLIST_ENDPOINT` is currently `null`.
+
+The current implementation attempts to POST to `/api/waitlist` but does not inspect the returned HTTP status.
+
+It then attempts to write the entire survey payload to Firestore. When that fails, it catches the exception and returns a success message after logging a staging/demo submission.
+
+The Firestore rules allow only a specific set of waitlist fields, while the complete questionnaire contains additional fields such as interests, previous disruptions, preferred features, pricing preferences, and feedback.
+
+The mismatch can reject the Firestore write.
+
+The application can then claim that information was saved even though durable persistence was never confirmed.
+
+Fix the root cause.
+
+**A waitlist submission must never report that it was recorded unless the configured persistence system actually confirms success.**
+
+## 9.2 Choose one source of truth
+
+Inspect the intended architecture before implementing the fix.
+
+The application already has a PostgreSQL endpoint for waitlist submissions and a separate Firestore collection.
+
+Choose a deliberate source of truth for waitlist records. Prefer one controlled persistence path, with the existing Express/PostgreSQL backend being a reasonable default because it already supports waitlist writes.
+
+Do not send the same complete survey to PostgreSQL and Firestore independently without a clearly designed synchronization requirement.
+
+If the backend is used:
+
+- Submit the required sanitized payload.
+- Inspect `response.ok` and the returned response body.
+- Validate the returned success state.
+- Show a success message only after a confirmed successful write.
+- Show a specific retryable error when the backend fails.
+- Handle a server timeout without assuming either success or failure if the outcome is genuinely uncertain.
+- Avoid creating duplicate records after retries.
+
+If the database is unavailable, return a truthful unavailable result rather than storing the submission in a browser `Set` and claiming that it was saved.
+
+A local demonstration can remain available only when it is explicitly identified as a local demo. Demo mode is not durable waitlist persistence.
+
+## 9.3 Preserve the questionnaire
+
+Do not discard the extended survey data just to satisfy existing Firestore rules.
+
+Determine which questions are genuinely needed, then define a deliberate schema for the selected storage design.
+
+Validate all expected fields and enum values at the server boundary.
+
+Ensure that client data and server types agree.
+
+If the full questionnaire belongs in PostgreSQL, store the needed fields using a clear schema and migration. If JSON storage is appropriate for extended optional answers, document its structure and validation requirements.
+
+If Firestore is retained for any part of the feature, align the actual writes with restrictive rules that represent the intended data contract.
+
+Do not use a broad rule that allows arbitrary data fields.
+
+## 9.4 Validation and deduplication
+
+Validate the email on both the client and server.
+
+Normalize email addresses consistently for lookup and deduplication.
+
+Validate survey enums, array sizes, free-text length, and optional fields.
+
+Consider a database uniqueness constraint for normalized emails if the intended business behavior is one waitlist entry per email. Implement the schema migration safely and handle uniqueness conflicts intentionally.
+
+Repeated requests must not produce multiple subscriptions merely because the frontend was retried.
+
+Avoid storing sensitive or unnecessary questionnaire information.
+
+Do not log submitted emails or complete survey payloads in normal application logs.
+
+## 9.5 Repair waitlist tests
+
+The current test expects a success message that does not match the actual fallback behavior. It also uses an extensionless import that fails under the direct Node ESM test setup.
+
+Fix the test architecture, not just the message string.
+
+Add deterministic tests for:
+
+- Invalid email.
+- Missing required usage choice.
+- Valid submission.
+- Duplicate submission.
+- Server success.
+- Non-2xx HTTP response.
+- Network failure.
+- Malformed server response.
+- Database unavailable.
+- Server-confirmed duplicate.
+- Retry behavior.
+- No false success when every persistence route fails.
+
+Mock dependencies rather than calling real Firebase or production APIs from unit tests.
+
+Test the precise success contract that the application guarantees.
+
+---
+
+# 10. PHASE EIGHT — SECURE THE EXPRESS API AND DATABASE
+
+## Targets
+
+- `server.ts`
+- `src/middleware/auth.ts`
+- `src/lib/firebase-admin.ts`
+- `src/db/index.ts`
+- `src/db/schema.ts`
+- `src/db/users.ts`
+- Relevant API tests.
+
+## 10.1 Apply shared server protections
+
+The current Express server uses `express.json()` without an explicit size limit.
+
+Review and implement appropriate baseline protections:
+
+- JSON body size limits.
+- Server-side validation.
+- Reasonable request timeouts.
+- Rate limiting on public and expensive endpoints.
+- Appropriate security headers, using a maintained middleware if suitable.
+- A consistent error-handling strategy.
+- Generic client error messages that do not disclose secrets.
+- Structured, privacy-conscious server logging.
+- Correct production versus development behavior.
+- Explicitly configured CORS only where needed.
+
+Do not introduce an arbitrary CORS policy that breaks the current hosting environment. Determine which origins are required and configure the smallest suitable allowlist.
+
+Do not expose unnecessary server fingerprints or debugging information in production.
+
+Review dependency security and the existing framework versions before changing dependencies.
+
+## 10.2 Secure `/api/flight-scans`
+
+The current flight-scan route accepts `userId` from the request body, converts it to an integer, and writes the scan without requiring authentication.
+
+This is unsafe because callers may submit arbitrary user identifiers or generate unwanted database writes.
+
+Require Firebase authentication for user-specific flight-scan operations.
+
+Verify the Firebase ID token through the existing server-side authentication middleware.
+
+Derive the authenticated Firebase UID from the verified token. Do not trust a body-supplied `userId`.
+
+If the PostgreSQL table uses an internal numeric user ID, map the verified Firebase UID to the correct database user record.
+
+Reject attempts to attach a scan to another user's record.
+
+Validate:
+
+- Flight number.
+- Flight date.
+- Route.
+- Delay.
+- Estimated amount.
+- Claim-letter length.
+- Any other supplied fields.
+
+Reject invalid numbers, excessive strings, malformed dates, invalid enum values, and unexpected fields.
+
+Return the correct HTTP status and structured response.
+
+Add tests for missing authorization, invalid tokens, valid user submissions, cross-user attempts, and malformed input.
+
+## 10.3 Secure `/api/waitlist`
+
+Public access may be necessary for visitors to join the waitlist, so do not force sign-in without a genuine product requirement.
+
+Instead, implement suitable public-endpoint protections:
+
+- Rate limits.
+- Input validation.
+- Normalization.
+- Deduplication.
+- Payload limits.
+- Consistent error responses.
+- Privacy-conscious logging.
+- Appropriate protection against repeated automated submissions.
+
+Do not allow public users to read the waitlist.
+
+Do not trust the fact that frontend validation has passed.
+
+## 10.4 Secure `/api/verify-flight`
+
+Validate the flight code, airport inputs, dates, and request size before passing them to the Gemini service.
+
+Apply rate limiting to control cost and prevent abuse.
+
+Do not interpolate arbitrary unbounded values into prompts.
+
+Do not expose raw model errors, credentials, or environment variables to clients.
+
+Handle provider quotas, timeouts, empty results, and malformed responses safely.
+
+Ensure failed verification calls do not generate legal eligibility conclusions.
+
+## 10.5 Review `/api/user/sync`
+
+Preserve the required authentication protection.
+
+Derive the authenticated UID and trusted email from the verified Firebase token. Validate optional profile information, particularly URLs and user-controlled strings.
+
+Do not allow arbitrary profile ownership or untrusted properties to be written to user records.
+
+## 10.6 Database configuration and errors
+
+Inspect `src/db/index.ts`.
+
+The current PostgreSQL pool is initialized from environment variables such as:
+
+- `SQL_HOST`
+- `SQL_USER`
+- `SQL_PASSWORD`
+- `SQL_DB_NAME`
+
+Verify all configuration requirements and provide a clear startup or readiness error when required values are missing.
+
+Do not silently operate as if the database is healthy when the service cannot persist records.
+
+However, avoid breaking independent frontend functionality merely because an optional service is unavailable. Isolate features appropriately.
+
+Do not log secrets or full sensitive SQL payloads.
+
+Preserve parameterized database operations through the existing ORM.
+
+Use explicit database migrations for schema changes. Never execute a destructive migration against production data automatically.
+
+Document all new environment variables in `.env.example`, without real credentials.
+
+---
+
+# 11. PHASE NINE — FIX FIRESTORE RULES AND ENFORCE OWNERSHIP
+
+## Targets
+
+- `firestore.rules`
+- `security_spec.md`
+- `src/lib/firebase.ts`
+- `src/lib/firebase-admin.ts`
+- All components accessing Firestore.
+
+The existing rules already implement some useful ownership controls. Preserve and strengthen the intended security model.
+
+Do not replace the current rules with permissive rules simply to remove permission errors.
+
+## Requirements
+
+### User records
+
+Users should only be able to read or modify their own permitted profile fields, except for carefully authorized administrative access.
+
+Do not trust client-provided identity values.
+
+### Inspections
+
+A user must only be able to access their own saved inspections.
+
+On create, verify that the owner matches the authenticated Firebase UID.
+
+On read, update, and delete, verify ownership in the appropriate existing or incoming document fields.
+
+Preserve appropriate field allowlists, required fields, maximum field lengths, and data-type checks.
+
+Ensure query constraints are compatible with the rules.
+
+### Waitlist
+
+If Firestore remains the chosen source for any waitlist functionality, define exactly which fields may be written and ensure the actual payload conforms.
+
+Never permit public reading of email addresses or survey records.
+
+If the application migrates waitlist persistence to PostgreSQL, remove obsolete direct Firestore writes and update the security specification accordingly.
+
+### Administrative access
+
+Review the current hard-coded administrator email in the Firestore rules.
+
+Use an appropriately controlled administrative identity or custom claims where feasible, without widening access. Do not let users grant themselves admin status through writable profile fields.
+
+Document any required administrator configuration.
+
+### Tests
+
+Use the Firebase Emulator Suite and rule-testing tooling if available.
+
+Verify:
+
+- Unauthenticated reads fail.
+- Cross-user inspection reads fail.
+- Cross-user updates and deletes fail.
+- Valid owner operations succeed.
+- Malformed documents fail.
+- Waitlist documents accept only the intended fields.
+- Waitlist reading is restricted.
+- Unexpected properties cannot be injected.
+
+If the emulator cannot run in the current environment, still add or repair the relevant tests and report the environmental limitation honestly.
+
+Official reference:
+https://firebase.google.com/docs/firestore/security/rules-fields
+
+https://firebase.google.com/docs/firestore/security/rules-conditions
+
+https://firebase.google.com/docs/firestore/security/rules-query
+
+---
+
+# 12. PHASE TEN — CORRECT PRIVACY PROMISES AND USER CONSENT
+
+## Targets
+
+- `src/components/PrivacyModal.tsx`
+- `src/components/SecurityCenterModal.tsx`
+- `src/components/CommitmentsSection.tsx`
+- `src/components/GmailScannerModal.tsx`
+- `src/components/GmailFlightScannerModal.tsx`
+- `src/components/CookieConsentBanner.tsx`
+- Relevant footer and product-copy components.
+
+The interface emphasizes a local-first privacy model. Ensure every privacy claim accurately describes what the software actually does.
+
+## Review every privacy promise
+
+Determine exactly what happens to:
+
+- Gmail message metadata and snippets.
+- OAuth access tokens.
+- Flight details submitted to Gemini.
+- Google Search grounding requests.
+- Saved flight inspections.
+- User profile information.
+- Waitlist answers.
+- Cookies and local browser storage.
+- Error logs.
+- Claim letters.
+- Analytics, if any.
+
+Distinguish:
+
+1. Information processed within the browser.
+2. Information transmitted directly to Google or other providers.
+3. Information sent to the Rights Radar backend.
+4. Information persisted in Firebase or PostgreSQL.
+5. Information retained only temporarily in application memory.
+6. Information that the current application does not process at all.
+
+Do not claim that all data stays on the device if flight details are sent to Gemini, saved records are written to remote services, or user information is stored in a database.
+
+A browser-side Gmail parser can still process returned metadata locally, but that does not mean there are no external requests.
+
+Do not describe an ordinary in-memory token as end-to-end encryption or cryptographic isolation.
+
+## Implement an understandable privacy experience
+
+Explain which data is used by each feature and why.
+
+Do not collect additional information simply because the form supports it.
+
+Keep log messages free of personal email addresses, reservation codes, Gmail access tokens, and full claim letters.
+
+Make it clear when connecting Gmail is optional.
+
+Provide a clear disconnect action and ensure it clears transient state.
+
+Review the cookie banner so that its consent wording corresponds to the actual use of cookies or storage. Do not imply optional tracking exists if it does not.
+
+Make the waitlist questionnaire's data use understandable before submission.
+
+If a feature requires an external provider, explain that fact before the user relies on its result.
+
+Do not make unsupported security promises. Prefer precise descriptions of actual behavior.
+
+Update `security_spec.md` so it documents the real implementation, including known limits.
+
+---
+
+# 13. PHASE ELEVEN — REGULATORY PULSE AND CURRENT INFORMATION
+
+## Target
+
+`server.ts` and the components that render regulatory information.
+
+The current regulatory-pulse fallback contains a predefined claim that particular negotiations remain ongoing and that no changes to specified rules have entered into force. That statement may become outdated.
+
+Do not return it as if a fresh search had established it.
+
+Implement a truthful regulatory-information workflow.
+
+### Requirements
+
+- Preserve retrieved source URLs and available publication or update dates.
+- Record the last successful refresh time.
+- Apply a bounded cache with an explicit TTL.
+- Mark stale information.
+- Distinguish live search results from evergreen official legal references.
+- Show when the live service is unavailable.
+- Avoid claiming a legal reform is enacted until an authoritative source confirms it.
+- Never treat a draft proposal, discussion, or political agreement as automatically equivalent to an enacted rule.
+- Handle empty grounding metadata without inventing citations.
+- Keep search failures separate from legal conclusions.
+
+Where practical, prefer official European Commission, EUR-Lex, and Court of Justice sources.
+
+Verify the actual response format supported by the installed Gemini SDK. Current Gemini documentation describes structured grounding metadata and source citations:
+
+https://ai.google.dev/gemini-api/docs/google-search
+
+Do not assume a specific response shape without verifying it against the installed version and relevant tests.
+
+The regulatory pulse must remain informative when live data is unavailable, but must not mislead the user about freshness.
+
+---
+
+# 14. PHASE TWELVE — USER EXPERIENCE AND ACCESSIBILITY
+
+Keep the existing visual direction while improving the quality of real workflows.
+
+Do not prioritize visual embellishments over legal accuracy, honest status messages, and reliable persistence.
+
+## Simulator
+
+- Make the required flight details understandable.
+- Clearly identify unknown legal inputs.
+- Display the reason for an estimate.
+- Distinguish the compensation amount from other potential rights.
+- Provide official source links where relevant.
+- Clearly identify assumptions and incomplete verification.
+- Never display a definitive legal verdict from incomplete inputs.
+- Show a useful empty state before the user enters enough information.
+- Use precise dates and units.
+- Ensure the generated letter reflects the selected disruption.
+
+## Gmail
+
+- Show a genuine empty inbox state.
+- Show a separate scanning-error state.
+- Make authorization status understandable.
+- Explain when results come directly from a user's emails versus an external search.
+- Mark extracted values that have not been verified.
+- Keep a final preview and confirmation before creating a claim draft.
+
+## Waitlist
+
+- Preserve the existing questionnaire and visual layout.
+- Give accurate submission, failure, and retry feedback.
+- Prevent duplicate clicks while a submission is in progress.
+- Do not lose answers unnecessarily when a retry is required.
+- Never clear the form as if submission succeeded when the backend rejected it.
+
+## Accessibility
+
+Check:
+
+- Keyboard navigation.
+- Focus visibility.
+- Correct dialog focus and closing behavior.
+- Accessible labels and error messages.
+- Reduced-motion preferences for significant animations.
+- Contrast and readability.
+- Responsive behavior at narrow viewport widths.
+- Disabled and loading states.
+- Screen-reader labels for interactive controls.
+
+Do not remove the radar design or animations merely to satisfy accessibility. Improve them in targeted ways.
+
+---
+
+# 15. PHASE THIRTEEN — PERFORMANCE, MAINTAINABILITY, AND ASSETS
+
+Inspect the full archive and references to large assets.
+
+The uploaded archive contains a very large MP4 under `public/assets/aistudio/`, approximately 132 MB. Verify whether it is actually used by the application.
+
+If the asset is unused, remove it only after checking every source reference and build requirement. If it is necessary, assess optimization, lazy loading, and a more appropriate delivery strategy.
+
+Do not remove visual assets solely because their filenames seem unfamiliar.
+
+Review the duplicate HTML exports and AI Studio artifacts. Determine which files are actual source-of-truth files, which are deployment outputs, and which are unused exports.
+
+Do not modify an exported HTML file as a substitute for repairing the React source if the React source drives the real application.
+
+Also review:
+
+- Unnecessary imports.
+- Duplicate logic.
+- Unbounded arrays and caches.
+- Repeated network requests.
+- Missing loading states.
+- Event listener cleanup.
+- Timers and asynchronous state updates.
+- Error boundaries.
+- Excessive dependency additions.
+- Unnecessary re-rendering.
+- Production asset loading.
+
+Do not prematurely optimize the application in ways that break its visual identity or behavior.
+
+---
+
+# 16. PHASE FOURTEEN — BUILD A REAL TEST STRATEGY
+
+A few successful unit tests are not sufficient for this application.
+
+Add a dedicated test workflow to `package.json`, compatible with the existing toolchain and lockfile.
+
+Tests must run without using production credentials, real passenger mailboxes, or live database writes.
+
+## 16.1 Calculator tests
+
+Cover at least:
+
+- Invalid and negative distance.
+- Invalid dates and unsupported input values.
+- Arrival delays under three hours.
+- Arrival delays exactly three hours.
+- Arrival delays just under four hours.
+- Arrival delays exactly four hours.
+- Every distance-band boundary.
+- A short qualifying EU261 flight.
+- A short flight outside EU261 scope.
+- A long-haul flight departing the EU on a non-EU carrier.
+- A long-haul flight arriving in the EU on an eligible EU carrier.
+- A long-haul flight arriving in the EU on a non-EU carrier.
+- An out-of-scope New York-to-Paris flight on Delta.
+- The relevant valid long-haul €300 case.
+- A relevant €600 long-haul case.
+- Cancellation notification and re-routing edge cases.
+- Involuntary versus voluntary denied boarding.
+- Connecting flights under a single reservation.
+- Unknown geographic scope.
+- Unsupported legal regimes.
+- Unsupported limitation periods.
+- Missing evidence for a deadline.
+- Correct result explanations and cited rules.
+
+The €300 long-haul rule must be tested under the correct scope assumptions. Do not simply delete it to resolve an earlier implementation bug.
+
+## 16.2 Claim-letter tests
+
+Verify correct wording for:
+
+- Delay.
+- Cancellation.
+- Denied boarding.
+- Unknown eligibility.
+- Missing passenger details.
+- Missing carrier information.
+- Invalid or unavailable amount.
+- A user who requests a neutral information letter rather than a compensation demand.
+
+Ensure generated letters do not invent a statutory payment deadline.
+
+## 16.3 Waitlist tests
+
+Test input validation, duplicate behavior, HTTP success, HTTP failure, malformed responses, connection errors, persistence unavailability, retry behavior, and exact success semantics.
+
+Test that raw survey payloads are not logged.
+
+## 16.4 Gmail tests
+
+Use fixtures that resemble Gmail API responses without using actual private messages.
+
+Test:
+
+- No matching messages.
+- Successful message listing.
+- Failed message listing.
+- Expired token.
+- Missing Gmail scopes.
+- Malformed message metadata.
+- No flight number.
+- No route.
+- No delay information.
+- Ambiguous airline.
+- Cancellations without notice information.
+- Parsing failures.
+- No fabricated demo results.
+- Correct recipient in draft previews.
+- Draft creation success and failure.
+- Proper disconnect and transient-state cleanup.
+
+## 16.5 Backend tests
+
+Test:
+
+- Unauthenticated flight-scan write.
+- Invalid Firebase token.
+- Valid authenticated write.
+- Forged user identifier.
+- Invalid flight date.
+- Excessively large request.
+- Malformed payload.
+- Invalid compensation amount.
+- Public waitlist rate limits.
+- Invalid email.
+- Duplicate subscription.
+- Missing database configuration.
+- Database failure.
+- Gemini timeout.
+- Gemini quota exhaustion.
+- Empty grounding results.
+- Fallback data.
+- Cache expiry.
+- Invalid route inputs.
+- Security headers and error responses.
+
+Use dependency injection or mocks where it materially simplifies deterministic tests.
+
+## 16.6 Build and type checks
+
+Run the appropriate commands for the actual package manager:
+
+- Test suite.
+- TypeScript type-check.
+- Production build.
+- Dependency audit where available.
+- Firebase rules tests where available.
+
+Do not change the TypeScript compiler configuration to hide errors without explaining and validating the consequences.
+
+Fix genuine errors rather than weakening compiler checks.
+
+Do not claim the application works in production solely because Vite generates output successfully.
+
+---
+
+# 17. PHASE FIFTEEN — SECURITY REVIEW
+
+Perform a focused security pass on the complete codebase.
+
+Use the OWASP API Security Top 10 as a review framework, particularly authentication, authorization, property-level access control, unrestricted resource consumption, security misconfiguration, and unsafe third-party API consumption.
+
+Reference:
+https://owasp.org/www-project-api-security/
+
+Review Express production practices:
+https://expressjs.com/advanced/best-practice-security/
+
+Specifically investigate:
+
+- Authentication and ownership.
+- Unauthorized flight-scan writes.
+- Arbitrary user-ID assignment.
+- Excessive Gmail permissions.
+- Personal information in logs.
+- Public endpoints without suitable abuse controls.
+- Missing request limits.
+- Exposed secrets.
+- Unsafe error responses.
+- Forged or malformed request bodies.
+- Client-controlled administrative properties.
+- Inconsistent Firestore permissions.
+- API quota consumption.
+- Unbounded caches.
+- Stale live-result presentation.
+- Unnecessary personal data collection.
+- Unsafe or misleading external source links.
+- Incorrect legal status assertions.
+
+Do not blindly apply security changes that interfere with the legitimate public waitlist. Protect public functionality without permitting unauthorized access to private data.
+
+If an external credential is exposed in the repository, do not print it in the final report. Identify the affected variable or configuration and recommend appropriate rotation.
+
+---
+
+# 18. PHASE SIXTEEN — REQUIRED IMPLEMENTATION ORDER
+
+Work in the following order. You may address related issues together, but do not omit any phase without documenting why.
+
+### Priority 1 — Truthful core functionality
+
+Fix the compensation engine and legal scope.
+
+Fix the false-success waitlist workflow.
+
+Remove fake flight-verification findings.
+
+Remove automatic demo records from live Gmail scanning.
+
+Correct the hard-coded deadline and generated-letter defects.
+
+### Priority 2 — Backend and access controls
+
+Authenticate user-specific flight-scan writes.
+
+Implement request validation and rate limiting.
+
+Correct persistence behavior and database error handling.
+
+Align Firestore rules with actual writes.
+
+### Priority 3 — Gmail and privacy
+
+Use least-privilege permissions.
+
+Correct token lifecycle handling.
+
+Make flight extraction conservative.
+
+Correct draft recipients and remove unsupported legal assertions.
+
+Update privacy and consent wording.
+
+### Priority 4 — Reliability and tests
+
+Introduce a proper test script.
+
+Expand regression tests.
+
+Fix type errors.
+
+Run the production build.
+
+Verify cache behavior and failure states.
+
+### Priority 5 — Polish
+
+Correct presets and interface wording.
+
+Improve accessibility.
+
+Check the asset footprint and remove unused resources only when safe.
+
+Update documentation and deployment instructions.
+
+---
+
+# 19. DEFINITION OF DONE — ACCEPTANCE CRITERIA
+
+The task is not complete until the following conditions are met or individually documented as externally blocked.
+
+## Legal correctness
+
+- [ ] Unknown geographic scope does not default to eligible.
+- [ ] Carrier and route scope are evaluated from explicit inputs.
+- [ ] Delay, cancellation, and denied boarding use separate legal conditions.
+- [ ] The amount cannot be returned without the appropriate distance and eligibility assessment.
+- [ ] The €300 long-haul case remains supported where the official rule applies.
+- [ ] The New York-to-Paris Delta demonstration no longer receives automatic EU261 eligibility.
+- [ ] Presets agree with their route, distance, description, and amount.
+- [ ] Unsupported national limitation periods do not use a fabricated default.
+- [ ] Claim letters match the actual disruption type.
+- [ ] Unsupported statutory payment deadlines are removed.
+- [ ] Each legal conclusion has a meaningful explanation and official source reference.
+
+## Flight verification
+
+- [ ] Live-verification failures never appear as successful checks.
+- [ ] No incident found does not mean proof of no incident.
+- [ ] A general legal source is not misrepresented as a live operational finding.
+- [ ] Missing grounding metadata does not cause fabricated citations.
+- [ ] Search output alone cannot establish definitive legal eligibility.
+- [ ] Caches expire and stale results are labelled.
+- [ ] API failures and quota errors produce honest states.
+
+## Gmail
+
+- [ ] Empty Gmail search returns an empty state rather than hard-coded flights.
+- [ ] Failed Gmail scanning never returns fictitious results.
+- [ ] Missing flight details remain unknown.
+- [ ] An email keyword does not automatically establish eligibility.
+- [ ] Gmail scopes are reduced to the minimum necessary.
+- [ ] Access-token lifecycle and disconnect behavior are tested.
+- [ ] Claim drafts display the real recipient and correct flight.
+- [ ] The application never sends a claim unexpectedly.
+- [ ] Google verification limitations are documented.
+
+## Persistence and security
+
+- [ ] Waitlist success requires confirmed persistence.
+- [ ] Non-2xx HTTP responses are treated as failures.
+- [ ] No staging fallback falsely claims the submission was saved.
+- [ ] Survey data has a deliberate schema and storage destination.
+- [ ] Duplicate submissions are handled consistently.
+- [ ] Flight-scan writes require valid user authentication.
+- [ ] Client-supplied user IDs cannot change ownership.
+- [ ] Public endpoints have appropriate validation and abuse controls.
+- [ ] Database configuration errors are understandable.
+- [ ] Firestore ownership rules remain restrictive.
+- [ ] Waitlist and private inspection data cannot be read by unauthorized users.
+- [ ] Sensitive user information is not logged unnecessarily.
+
+## Product and privacy
+
+- [ ] Privacy wording accurately reflects real data flows.
+- [ ] The application distinguishes local processing from cloud processing.
+- [ ] The user understands when Gmail or Gemini is contacted.
+- [ ] Waitlist, simulator, and Gmail states communicate failures honestly.
+- [ ] The existing visual identity is preserved.
+- [ ] Key interactions remain keyboard-accessible.
+- [ ] Large unused assets are handled appropriately.
+
+## Build and testing
+
+- [ ] A dedicated test command exists and runs reproducibly.
+- [ ] The original test-runner problem is resolved.
+- [ ] New regression tests cover the identified bugs.
+- [ ] TypeScript checks pass or remaining issues are explicitly recorded.
+- [ ] The production build passes or a precise blocker is recorded.
+- [ ] Security checks are executed where available.
+- [ ] All changes remain compatible with the repository's configured toolchain.
+
+---
+
+# 20. REQUIRED FINAL REPORT
+
+When finished, provide a clear report with the following sections.
+
+## A. Executive summary
+
+Explain what was repaired, what remains incomplete, and whether the application is demonstrably more reliable.
+
+Do not exaggerate readiness.
+
+## B. Problems fixed
+
+For every major fix, state:
+
+- The original defect.
+- The root cause.
+- The implementation change.
+- The relevant files.
+- The test or evidence confirming the fix.
+
+## C. Legal-engine changes
+
+Summarize the new input model, geographic scope logic, compensation bands, uncertainty states, source references, and deadline handling.
+
+Mention any legal questions intentionally left as human-review cases.
+
+## D. Security and privacy changes
+
+Explain improvements to API authorization, request validation, persistence, Firebase rules, Gmail scopes, logging, and privacy disclosures.
+
+Do not include real tokens, secrets, personal emails, or private user records.
+
+## E. Tests actually executed
+
+Give the exact command and result for each test or validation check.
+
+Separate:
+
+- Passed.
+- Failed.
+- Not run.
+- Blocked by missing environment configuration.
+
+Do not count a test that merely exists as a test that passed.
+
+## F. Remaining external setup
+
+List any real requirements such as:
+
+- Firebase credentials or project configuration.
+- PostgreSQL connection settings.
+- Gemini API access.
+- Gmail OAuth configuration and Google verification.
+- Database migrations that require authorized deployment.
+- External legal review.
+- Production-domain configuration.
+
+Distinguish code problems from external setup problems.
+
+## G. Files changed
+
+Provide the main modified files, any new files, any migrations, and the purpose of each.
+
+## H. Final readiness assessment
+
+State separately whether the application is ready for:
+
+1. Local development.
+2. A controlled demo.
+3. Closed user testing.
+4. Production deployment.
+
+Use evidence and actual test results, not confidence or visual polish, to support the assessment.
+
+---
+
+# FINAL EXECUTION INSTRUCTION
+
+Start by inspecting the live repository and its actual configuration. Create the issue matrix, then implement the repairs in the order above.
+
+Do not return only a plan, recommendations, mock code, or an explanation of what someone else should do.
+
+Modify the real project, make the changes coherent across the frontend, backend, legal engine, storage model, tests, security rules, and documentation, and verify the results.
+
+When a requirement cannot be fully completed, finish the feasible work, identify exactly what remains, and do not fabricate a passing result.
+
+**The goal is not to make Rights Radar look more reliable. The goal is to make its actual behavior more reliable, legally defensible, secure, transparent, and testable while preserving the product's distinctive design.**

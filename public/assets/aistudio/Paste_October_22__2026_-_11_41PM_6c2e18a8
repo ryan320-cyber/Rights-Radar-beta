@@ -1,0 +1,400 @@
+# MASTER PROMPT — RIGHTS RADAR
+## Unseen-inspired immersive, editorial, motion-led website — original and production-minded
+
+### 1. ROLE AND MISSION
+
+Act as a senior frontend engineer, UI/UX designer, visual design specialist, typography expert, and motion designer. Build a complete, responsive, one-page website for **Rights Radar**.
+
+Rights Radar is a proposed local-first tool that scans a user's own flight-booking confirmations for possible flight disruptions, estimates whether a claim may be eligible under the applicable regime, prepares a claim letter for the user to review and send themselves, and tracks relevant deadlines.
+
+The website's goals are to:
+1. Explain the proposed product clearly and honestly.
+2. Communicate privacy, user control, and the limits of the tool.
+3. Measure genuine interest through a waitlist form and one usage question.
+
+This is not a sales page built on fabricated proof. The product is not yet built. Be transparent about what is planned, what is a mockup, and what still needs verification.
+
+**Language:** All user-facing website copy must be in French.
+**Tone:** Calm, precise, plain, confident, credible; never exaggerated.
+**Deliverables:** Build working files, not just a design description.
+
+### 2. FIRST: INSPECT THE EXISTING CODEBASE
+
+Before changing or writing code:
+- Inspect the project files and identify the actual stack, entry points, build tools, dependencies, component structure, styling method, and scripts.
+- Read existing code and configuration before making assumptions.
+- Identify existing design tokens, typography, CSS conventions, routing, form handling, and accessibility patterns.
+- Run the available build, lint, test, and type-check commands where possible; record the baseline failures.
+- Preserve working functionality and avoid unnecessary rewrites or dependencies.
+- If there is an existing app, integrate the design into its architecture idiomatically. If the task is a standalone deliverable, create the requested self-contained HTML files.
+- Do not ask broad questions if the supplied specification is sufficient to proceed. If a genuinely blocking decision is missing, ask one focused question; otherwise make a reasonable, documented choice.
+
+Before implementation, create a short internal plan. Then implement, test, inspect, and fix issues. Do not stop after describing the plan.
+
+### 3. CREATIVE DIRECTION — IMMERSIVE EDITORIAL EXPERIENCE
+
+Use **Unseen Studio (https://unseen.co/)** as a high-level visual and interaction reference. Study the publicly visible craft: a cinematic entry into a visual environment, expressive but restrained typography, a navigable visual world, editorial minimalism, smooth scene transitions, and navigation that stays clear while the visuals do the storytelling.
+
+**Do not clone the site.** Do not reproduce its exact 3D scenes, composition, layouts, menu design, copy, branding, imagery, project thumbnails, code, or signature interaction. Create an original Rights Radar experience using the same general level of art direction and immersion. The website must be recognizably about detecting flight disruptions and understanding possible passenger rights—not a portfolio site.
+
+The core concept is **“a navigable world of flights, disruptions, documents, and deadlines.”** Make the interface feel like exploring a carefully art-directed digital environment rather than scrolling through a generic SaaS template. Radar rings, route arcs, document planes, destination markers, and deadline objects may form the spatial world. Each visual element must communicate a real part of the product concept.
+
+Priorities, in order:
+1. A distinctive full-screen opening/hero with a strong visual environment.
+2. An immersive but understandable radar or flight-path world that responds to pointer, drag, scroll, or touch where appropriate.
+3. Editorial typography and precise information hierarchy.
+4. Smooth, deliberate transitions between content scenes.
+5. Clear, accessible navigation and an obvious route to the waitlist.
+6. Honest product language and excellent performance.
+
+The experience should feel premium, spatial, art-directed, atmospheric, and original. Avoid copying the source site's recognizable scene or making the whole site resemble a creative-agency portfolio.
+
+### 4. DESIGN SYSTEM — CINEMATIC RADAR, EDITORIAL TYPE, SPATIAL INTERACTION
+
+Replace the previous neo-brutalist art direction with a **refined immersive digital-world aesthetic** inspired by the reference's atmosphere and craft. Do not use thick black borders on every component, heavy offset shadows, sticker rotations, pop-art color blocking, or deliberately chaotic neo-brutalist styling. The UI should feel composed and spatial, not rough or aggressive.
+
+#### 4.1 Palette and surface system
+
+Define centralized CSS custom properties at the top of the stylesheet. Build around a quiet, premium base with sparse semantic accents:
+- Primary canvas: warm porcelain `#F4F1EA` or similarly light neutral.
+- Secondary environment: pale mineral / mist `#E7E7E2`.
+- Dark scene / technical panel: deep ink `#101722`.
+- Primary text on light: near-black `#17191D`.
+- Primary text on dark: `#F6F5F1`.
+- Secondary text: a contrast-tested stone tone; never use low-contrast text for important information.
+- Radar mint `#43DDB0`, reserved for detections or active route markers.
+- Alert amber `#E7A63A`, reserved for deadlines, items not yet claimed, or review warnings.
+- Optional atmospheric tint: muted slate-blue or dusty lavender only as a very subtle environmental material—not a competing accent palette.
+
+Color rules:
+- Let neutral tones, light, shadow, and geometry carry most of the visual mood.
+- Mint and amber are semantic, not decorative. Keep both sparse.
+- Use occasional full-bleed dark scenes for contrast, especially in the radar hero or technical explanation, but preserve a coherent palette as sections transition.
+- Do not use generic purple-to-blue gradients, neon cyberpunk overload, rainbow glows, glassmorphism everywhere, or saturated neo-brutalist blocks.
+- Test every text/background pairing against WCAG AA: at least 4.5:1 for normal text and 3:1 for large text and essential UI graphics.
+- Provide a light, legible fallback when WebGL is unavailable, when printing, and under reduced motion.
+
+#### 4.2 Environment, depth, and composition
+
+- Design the hero as an art-directed **spatial scene** rather than a conventional centered headline above a card grid. Build an original radar environment from rings, softly lit surfaces, orbital route arcs, a horizon/grid, a globe-like route field, or layered document planes.
+- Use depth intentionally: foreground markers, middle-distance routes, and a quiet background. Motion and camera movement must be subtle enough that text remains readable.
+- Prefer smooth materials, soft environmental lighting, delicate grain, fine lines, and carefully composed negative space. Avoid decorative visual noise.
+- Use parallax only for visual layers, never body text; keep movement small and disable it for reduced motion and touch devices when it adds no value.
+- Use asymmetry and editorial placement. Headlines and CTAs may sit off-center if the composition remains easy to scan.
+- Avoid making every section an identical set of cards. Vary the visual grammar: a spatial hero, a departures-board scene, an editorial statistic, a timeline, a route/path explanation, paired commitment panels, a clear comparison chart, a four-part needs scene, and a focused waitlist scene.
+- Use borders sparingly and with finesse. Use thin rules, fine outlines, and tonal separation rather than thick black outlines everywhere. Use hard shadows only where they explain spatial layering; never apply cartoonish offset shadows indiscriminately.
+- Product mockups are scene objects, not fake screenshots of an already working app. Each must be labelled **« Maquette »**.
+- Preserve a visible text-first fallback for every important piece of content embedded in or positioned around the visual environment.
+
+#### 4.3 Typography
+
+Use an editorial pairing with a clear technical layer:
+- Display/editorial headlines: **Instrument Serif**, including restrained italic use for emphasis.
+- Body and interface: **IBM Plex Sans**.
+- Flight codes, figures, dates, status labels, and technical details: **JetBrains Mono**.
+- Load only the weights actually needed and provide system fallbacks.
+- Use large, confident typography with fluid sizing through `clamp()`. Let headlines feel editorial and cinematic without making the content hard to understand.
+- Keep body copy spacious and readable. Use uppercase sparingly for small labels and category markers rather than whole paragraphs.
+- Maintain a clear typographic scale and rhythm. Do not apply extreme text strokes or cartoonish text shadows.
+
+#### 4.4 Layout, interface, and components
+
+- Use a responsive grid, with a 12-column desktop composition where appropriate, maximum content width around 1440 px, desktop gutters around 64–80 px, and mobile gutters around 20 px while respecting safe-area insets.
+- Preserve generous but purposeful negative space. Do not fill every area with decoration.
+- Use clean, understated buttons and links that fit the environment. Interactive elements need clear hover, focus, pressed, and loading states but should not look like generic pill-shaped SaaS controls.
+- Use fine dividers, low-profile labels, clear section markers, and carefully placed data readouts.
+- Hover or focus may reveal a route marker, highlight a path, deepen a scene, or show supporting metadata. The action must make the information more understandable.
+- Keep essential navigation and form controls conventional enough to be quickly understood. Visual experimentation must never make controls ambiguous.
+- Mobile should feel like a designed adaptation of the same world, not a squeezed desktop composition.
+
+### 5. NON-NEGOTIABLE TRUTH, LEGAL, AND CONTENT RULES
+
+1. Never invent testimonials, user counts, success rates, partners, press quotes, legal conclusions, or product capabilities.
+2. Do not publish fabricated proof or imply that the proposed product has already delivered outcomes.
+3. Every product interface screenshot or product UI mockup must visibly say **« Maquette »**.
+4. Use cautious wording such as **« peut être éligible »**, **« estimation »**, and **« montant possible »**. Never say that a user definitely has a right to compensation or that compensation is guaranteed.
+5. Do not use the verb **« garantir »** anywhere in visible copy, including headlines. Avoid claims like “100 % récupéré”.
+6. Do not present FlightAware or any other flight-data service as proof in a claim flow.
+7. Do not name or cite the unidentified 68% UK survey associated with a company selling a similar service.
+8. Do not say that the EU reform was “adopted” in July 2026. The supplied wording is **« accord provisoire annoncé en juin 2026 »**, and this claim must be flagged for verification before publication.
+9. Every statistic must show a source and a type label: **[organisme public]**, **[académique]**, or **[partie intéressée]**.
+10. Anything marked **[À VÉRIFIER]** must be staging-only. Mark it with `data-review="true"` and a corresponding HTML comment. Show a visible amber review flag only when the page is opened with `?review=1`. Remove review flags and unresolved claims from the publication build.
+11. Do not use lorem ipsum or emoji.
+12. Do not give legal advice. Include a plain disclaimer that the site is not legal advice and that the tool does not replace a lawyer.
+13. Distinguish assumptions, estimates, examples, and sourced facts. Do not quietly replace missing evidence with general knowledge.
+14. Do not create fake source URLs or imply that a source supports more than it actually says.
+
+### 6. INFORMATION ARCHITECTURE AND REQUIRED SECTIONS
+
+Build semantic sections `S0` through `S9`, with stable IDs so the navigation index can jump to each section. All visible copy is French. Preserve the following section order and purpose.
+
+#### S0 — Optional immersive opening
+- Create a brief, original entry into the Rights Radar visual world: a route line emerges, radar rings resolve into view, or a minimal three-dimensional marker comes into focus.
+- The wordmark **Rights Radar** appears with restrained editorial motion. Avoid copying Unseen's exact letter animation or scene design.
+- Provide a single clear button: **« Entrer »**.
+- No sound or audio permission request. Do not include a sound toggle because this project does not need sound.
+- The opening must be skippable, last less than 1.5 seconds, and never block access to content. Skip it completely for `prefers-reduced-motion: reduce`.
+
+#### S1 — Hero
+- Build a full-viewport, immersive radar/flight-path environment with a clear focal point and carefully layered depth. It should feel like entering an explorable digital space, while remaining original to Rights Radar.
+- Headline: **« Le radar de vos droits en voyage. »**
+- Supporting copy: **« Il repère les vols qui peuvent ouvrir un droit à indemnisation, estime le montant possible et prépare votre réclamation. Vos données restent sur votre appareil. »**
+- Place the copy and CTA as part of the scene composition, not inside a generic centered SaaS hero card.
+- Primary CTA: **« Rejoindre la liste d’attente »**, scrolling to the waitlist.
+- Two radar blips or route markers appear on load, labelled as illustrative where needed. Their paths should make the radar metaphor understandable.
+- Offer a subtle drag/trackpad/touch exploration affordance only if the actual implementation supports it. Always provide a clear alternative to gesture-based navigation.
+- Make the “local-first” privacy idea clear without claiming security properties that have not been implemented.
+- One H1 only.
+
+#### S2 — The problem
+- Headline: **« Le droit existe. Pourtant, peu le réclament. »**
+- Left side: a departures-board-style panel with three fictional flight rows. Label it clearly: **« Tableau fictif, à titre illustratif »**. Each row may reveal line by line and carry a mint **« À réclamer »** label, but never present these examples as real users or confirmed claims.
+- Right side: the statistic **45 %**, with the source **« Transport Focus, 2026 [organisme public] (trains, pas avions) »**.
+- Animate the number from zero to its value over about 1.2 seconds only when the section enters view.
+- Keep the source and the fact that it concerns trains—not flights—visibly close to the statistic. Verify the source before publication; do not imply that it proves a claim about airline passengers.
+
+#### S3 — Why now
+- Headline: **« Pourquoi maintenant ? »**
+- A horizontal timeline with three stops. It may pin during scroll on desktop only if it remains accessible and does not hijack scrolling:
+  1. European rules evolving.
+  2. New technical possibilities, including lightweight AI models on personal computers.
+  3. Regulatory attention to deceptive interface patterns.
+- Each stop must show its source and date.
+- Unverified claims must use `data-review="true"` and a matching HTML comment, with the warning visible only in review mode.
+- On mobile, replace pinned motion with a normal stacked timeline.
+
+#### S4 — The solution
+- Headline: **« Cinq étapes, et vous gardez la main. »**
+- Draw a flight-path arc as the user scrolls, using `stroke-dashoffset` or an equivalent performant technique.
+- Five sequential nodes:
+  1. **Importer**
+  2. **Vérifier le vol**
+  3. **Estimer**
+  4. **Préparer**
+  5. **Suivre**
+- Show four product mockup cards in a stacked deck, each labelled **« Maquette »**. Only one card should be active at a time.
+- Do not imply that these interfaces are already operational. Make the user’s review and approval explicit before a claim is sent.
+
+#### S5 — Commitments
+- Two-column layout:
+  - **« Ce que nous faisons »**: explain the intended functions clearly, using check marks only for genuine product intentions.
+  - **« Ce que nous ne faisons pas »**: no claim purchase, no share of compensation, nothing sent without user approval, and no legal advice.
+- Draw check and cross marks in only when the section enters view, respecting reduced motion.
+- Include this footer line: **« Rights Radar ne remplace pas un avocat et aucune indemnisation n’est assurée. »**
+
+#### S6 — Comparison
+- Headline: **« D'autres services existent, et certains ont davantage d'expérience. »**
+- Show a proportional bar chart for an illustrative claim of **400 €**:
+  - Example A: a **35 %** commission = **140 €**, tagged **[partie intéressée : AirHelp]**.
+  - Example B: a hypothetical fixed price of **9 à 14 €**, tagged **[hypothèse à tester]**.
+- Bars grow from zero when the section enters view.
+- Visible note: **« Exemple de calcul, pas un résultat. »**
+- Clearly label the comparison as an example, not an endorsement or proof of market-wide pricing. Verify current competitor pricing and the source before publication. Do not state unsupported prices as settled facts.
+
+#### S7 — Needs
+- Headline: **« Prix clairs, rapidité, contrôle et confidentialité. »**
+- 2×2 grid of four needs: price clarity, speed, user control, and privacy.
+- Each tile can have a sharp border-draw hover/focus effect.
+- Include this disclaimer: **« Ces observations constituent des pistes de recherche, pas une preuve représentative. »**
+- Do not claim these needs have been validated by Rights Radar users unless real research supports that statement.
+
+#### S8 — Request and waitlist
+- Headline: **« Pour faire progresser Rights Radar, nous recherchons des participants. »**
+- Three requests:
+  1. Participants for user research.
+  2. Legal support or review.
+  3. Feedback on pricing.
+- Form fields:
+  - Email address.
+  - One radio question: **« Comment envisagez-vous d'utiliser l'outil ? »**
+    - **« Une fois »**
+    - **« Plusieurs fois par an »**
+    - **« Je ne sais pas »**
+- Consent copy: **« En envoyant votre email, vous acceptez que nous le conservions pour vous informer du projet. Vous pouvez demander sa suppression à tout moment. »**
+- Validate the email and require an explicit, accessible selection for the radio question if the form design makes it mandatory.
+- On success, show: **« Merci. Nous vous écrirons à l'ouverture. »**
+- Create one standalone `submitWaitlist(payload)` handler.
+- Define `const WAITLIST_ENDPOINT = null;` and document that no endpoint is configured by default.
+- If an endpoint is configured, send the payload safely and handle network/server errors without falsely reporting success.
+- If no endpoint is configured, show the success message only in the staging/demo mode and log the entry to the console in staging only. Never imply that the email has actually been saved or delivered when it has not.
+- Prevent duplicate submissions, provide a loading state, accessible validation errors, and a clear retry path.
+- Do not expose secrets or collect unnecessary personal data.
+
+#### S9 — Footer
+- Text-only source list, without logos:
+  EUR-Lex, Commission européenne, Parlement européen, Conseil de l'Union européenne, AirHelp, Skycop, Transport Focus, CURIA, Unsplash, Lucide, Phosphor, Google Fonts.
+- Include: **« Ce site ne constitue pas un conseil juridique. »**
+- Add a privacy-note link to a clearly labelled placeholder page or section. Do not pretend a complete privacy policy exists if it does not.
+- Provide a clear way to return to the top.
+
+### 7. NAVIGATION — QUIET, EDITORIAL, SPATIALLY AWARE
+
+- Keep a lightweight, persistent header with the Rights Radar wordmark and a clearly labelled **« Menu »** button.
+- Make the header unobtrusive over the immersive scene, but ensure readable contrast in every section (use a deliberate light/dark variant where required).
+- The Menu button opens a full-screen or large overlay index with a restrained editorial layout. Use numbering, generous type, and a small amount of movement, but do not reproduce Unseen Studio's exact menu composition or imagery.
+- Entries:
+  - **01 Problème**
+  - **02 Pourquoi maintenant**
+  - **03 Solution**
+  - **04 Engagements**
+  - **05 Comparaison**
+  - **06 Besoins**
+  - **07 Inscription**
+- The overlay may preview an abstract route or selected section marker, but must remain lightweight and legible.
+- Include an accessible close button, Escape-key support, sensible focus management, and focus return after closing.
+- Prevent background scrolling only while the overlay is open; never hijack normal scrolling.
+- Every navigation item must work and point to the correct section.
+- Use restrained transitions between sections; avoid long transition screens that slow access to information.
+
+### 8. RADAR VISUAL WORLD
+
+The radar world is the site's defining visual system. It should provide the immersive craft of a high-end interactive studio experience while conveying real Rights Radar concepts.
+
+- Use a dark or atmospheric radar field inside a broader warm-neutral visual system. The scene may include fine circular rings, softly rendered grid lines, route arcs, flight markers, a distant horizon, and layered document/deadline objects.
+- Create original visual compositions; do not reproduce Unseen Studio's world, globe, thumbnails, project scenes, or specific object placement.
+- Give flight markers clear meaning. A marker may reveal a fictional flight code, route, and delay when selected or reached by the radar sweep. Clearly label fictional examples as illustrative.
+- Mint means detected; amber means deadline/unclaimed. Do not use them as decorative glow effects.
+- The visual environment can respond to pointer movement or drag with very subtle rotation or camera offset, but must not make users feel that they need to explore the scene to understand the page.
+- If implementing drag exploration, include visible guidance, keyboard alternatives, touch support, and a reset or recenter control where appropriate. Keep all content and navigation accessible without dragging.
+- Implement the radar as a standalone module, e.g. `createRadar(canvas)` returning `start()` and `stop()`, so it can pause when off-screen.
+- Use Three.js only if it substantially improves the scene. If used, choose and verify a pinned UMD release; otherwise use a lightweight 2D canvas, CSS, or static illustrated fallback.
+- If WebGL is unavailable or fails, show an attractive static/canvas fallback rather than an empty area.
+- Reduce particle count and interaction complexity on small screens. Pause the scene when it leaves the viewport.
+- Mark purely decorative visuals `aria-hidden="true"`. Provide concise adjacent text for every meaningful visual status or data point.
+
+### 9. MOTION SYSTEM — CINEMATIC, PRECISE, MEANINGFUL
+
+Motion should feel intentional and crafted: slow environmental movement, precise arrivals, and clean scene transitions. It should never compete with the information or turn a practical rights tool into a confusing art experiment.
+
+Suggested motion tokens:
+- Scene entrance: opacity 0 → 1 with a small 12–24 px translation, around 500–800 ms.
+- Headline reveal: a restrained mask or line reveal, around 700–900 ms.
+- Flight marker: a short, clear arrival or route-trace animation.
+- Counter: 0 → target over around 1.2 seconds, only when visible.
+- Flight path: scroll-linked path drawing only where it clarifies sequence.
+- Hover/focus: around 180–260 ms, with no bounce.
+- Environment motion: low-amplitude, slow motion. Do not continuously animate every object.
+- Optional pointer response: very subtle spatial offset on desktop with a fine pointer. Disable on touch and when reduced motion is requested.
+- The menu overlay may reveal its index labels with a restrained stagger.
+
+Rules:
+- Keep no more than two simultaneously animated content elements per section, in addition to the low-intensity radar environment.
+- Use GSAP core and ScrollTrigger only if they materially improve the experience. Pin matching versions from cdnjs.cloudflare.com and verify chosen releases and compatibility; never invent version numbers. If native CSS/JS is simpler and more resilient, use it.
+- Lenis is optional. Skip it on touch devices and do not let smooth scrolling interfere with keyboard access, anchor navigation, or reduced motion.
+- Do not use sound, autoplay audio, forced video, flashing, elastic easing, exaggerated magnetic interactions, or scroll hijacking.
+- Keep parallax limited to visual layers and never animate body text in a way that harms reading.
+- Pause radar and section animations when off-screen using IntersectionObserver or a supported library mechanism.
+- For `prefers-reduced-motion: reduce`, remove the sweep, parallax, scrub, pinning, intro movement, and pointer effects. Render all content in its final state without requiring animation to reveal it.
+- The page must remain fully usable if JavaScript or a motion library fails.
+
+### 10. RESPONSIVE BEHAVIOR
+
+- Mobile-first implementation.
+- Check at 390 px wide and common desktop/tablet widths.
+- No horizontal overflow at any viewport.
+- Desktop may use the pinned timeline and scroll-drawn path.
+- Below 768 px, replace pinned sections with a simple stacked layout. Avoid pinning and complex scroll-linked effects on mobile.
+- Reduce radar complexity and disable cursor/magnetic effects on touch.
+- Buttons and form controls must be comfortable to use; target at least 44×44 px.
+- Use fluid type and spacing, e.g. `clamp()`, and account for safe-area insets.
+- Keep the full site content available on small screens and in reduced-motion mode.
+
+### 11. ACCESSIBILITY AND ENGINEERING QUALITY
+
+- Use semantic HTML landmarks and elements: header, nav, main, sections, footer, buttons, labels, fieldsets, and legends as appropriate.
+- Exactly one H1; preserve logical heading order.
+- Add a skip link to main content.
+- All controls must be keyboard accessible with visible focus states.
+- Use proper form labels, radio-group semantics, accessible error messages, and success feedback announced with an appropriate live region.
+- Do not communicate status through color alone.
+- Maintain WCAG AA contrast for all text and important UI elements.
+- Provide alt text for informative images; decorative graphics must be hidden from assistive technology.
+- Respect `prefers-reduced-motion`.
+- Do not use autoplay video, autoplay sound, third-party iframes, or audio cues.
+- Do not flash more than three times per second.
+- Ensure interactive controls have real behavior; no decorative buttons or dead links.
+- Avoid unnecessary dependencies, heavy assets, console errors, and layout shifts.
+- Use safe DOM updates and validate form data. Do not insert user input into HTML unsafely.
+- Keep the code readable, modular, and maintainable. Centralize tokens and reusable behavior instead of scattering one-off styles.
+- Include graceful fallbacks for missing CDN libraries and unsupported WebGL.
+
+### 12. PERFORMANCE TARGETS
+
+- Target Largest Contentful Paint under 2.5 seconds on a mid-range phone over 4G.
+- Keep the critical path lean. For the standalone version, prefer one HTML file plus a small number of pinned libraries.
+- Load only the fonts and scripts that are actually used.
+- Avoid expensive full-screen effects, large particle systems, excessive DOM nodes, and continuous animations off-screen.
+- Defer non-critical work where appropriate.
+- Do not load Lenis, Three.js, or GSAP just because they are listed; use them only when the chosen implementation benefits from them.
+- Test the no-WebGL and reduced-motion paths.
+
+### 13. IMPLEMENTATION REQUIREMENTS
+
+If the existing project architecture allows a better integrated solution, follow it while preserving all required behavior. If the task calls for the standalone deliverable, output:
+1. `rights-radar-site.html` — staging build, including review flags.
+2. `rights-radar-site-publish.html` — publication build with all review flags and unresolved review-only content removed.
+3. `site-notes.md` — every `[À VÉRIFIER]` item, library versions and release dates, design/architecture decisions, endpoint status, and QA results.
+
+For the standalone HTML:
+- Set `<title>Rights Radar</title>`.
+- Set the description to: **« Le radar de vos droits en voyage. Inscription à la liste d'attente. »**
+- Use semantic sections corresponding to S0–S9, with IDs for the menu.
+- Define CSS tokens before component styles.
+- Keep the radar module and waitlist handler logically separate, even if contained in one HTML file.
+- Define `WAITLIST_ENDPOINT = null` and document the behavior when it is unset.
+- Mark every unverified claim with both `data-review="true"` and an HTML comment.
+- Show review flags only when `?review=1` is present.
+- The publication file must not contain review flags or unresolved review-only claims. Do not silently convert an unverified statement into a fact; remove it or replace it with verified, sourced copy.
+- Use French copy throughout, no lorem ipsum, and no emoji.
+- If a library version cannot be verified, do not invent it. Record the uncertainty and prefer a stable fallback.
+
+### 14. QA CHECKLIST — MUST RUN BEFORE REPORTING
+
+Run the applicable checks and report pass/fail honestly:
+- [ ] No copied layout, text, imagery, identity, or code from a reference studio site.
+- [ ] No fabricated testimonial, user count, partner logo, press quote, or success rate.
+- [ ] No forbidden guarantee wording or “100 % récupéré” claim.
+- [ ] Every statistic has a visible source and source-type tag.
+- [ ] The 68% survey does not appear.
+- [ ] EU reform wording uses “accord provisoire annoncé en juin 2026” only as a review-flagged staging claim until verified; no claim of adoption in July 2026.
+- [ ] Every product visual says « Maquette ».
+- [ ] All example flight data is clearly labelled fictional/illustrative.
+- [ ] Waitlist validation, radio selection, loading, success, failure, and no-endpoint demo behavior work as documented.
+- [ ] No claim is sent without user approval.
+- [ ] Works at 390 px width without horizontal scroll.
+- [ ] Reduced-motion mode shows all content and removes complex motion.
+- [ ] No console errors on load or broken/missing CDN resources.
+- [ ] Radar pauses when off-screen and falls back if WebGL is unavailable.
+- [ ] Body text contrast is at least 4.5:1; focus states are visible.
+- [ ] Keyboard navigation, skip link, menu focus, and form announcements work.
+- [ ] No autoplay sound/video or prohibited flashing.
+- [ ] Review flags appear only with `?review=1` in staging.
+- [ ] Publication build contains no review flags or unresolved claims.
+- [ ] Every menu item, CTA, button, and link performs its stated action.
+- [ ] The notes file records test commands and actual outcomes; never mark a check as passed unless it was tested.
+
+### 15. ANTI-PATTERNS TO AVOID
+
+- Copying Unseen Studio's exact visuals, 3D worlds, page composition, menu layout, text, project imagery, or signature interactions.
+- Turning Rights Radar into a creative-agency portfolio instead of a clear product concept and waitlist.
+- Generic SaaS card grids, centered-everything layouts, purple-to-blue gradients, oversized neon glows, or meaningless glassmorphism.
+- The previous neo-brutalist treatment: thick black borders everywhere, hard cartoon shadows on every surface, rotated sticker clutter, high-saturation pop-art blocks, or intentionally rough styling.
+- Overly ornate 3D scenery that obscures the product explanation or harms load time.
+- Requiring users to drag, hover, hear sound, or complete an animation to reach essential information.
+- Scroll-jacking, forced horizontal scrolling, long mandatory intro screens, or pinned content that blocks navigation.
+- Animating every element at once or running effects off-screen.
+- Fake claims, fake research, unsupported legal interpretations, invented source details, or fabricated form submissions.
+- Decorative controls that do nothing, inaccessible custom cursors, low-contrast text, or motion without a content purpose.
+- Claiming that tests passed without running them.
+
+### 16. FINAL DELIVERY AND REPORT
+
+Do not stop at a design description. Inspect the codebase, implement the site, run the available QA checks, and fix issues that you can reproduce.
+
+At completion:
+- List the files created or changed.
+- Summarize the implemented design and interactions briefly.
+- Report the actual build/test/accessibility/responsive results, separating verified checks from checks that could not be run.
+- List unresolved `[À VÉRIFIER]` items and explain what evidence is needed.
+- State clearly whether a waitlist endpoint is configured and whether submissions are actually persisted.
+- Never claim production readiness if important checks or legal/source verification remain incomplete.
